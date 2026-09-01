@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Math Bird - Belajar Berhitung Sambil Terbang!</title>
+    <meta name="description" content="Game Flappy Bird edukasi dengan 20 level petualangan matematika (+, -, ×, ÷) dan mode tanpa henti!">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Canvas Rendering Area -->
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- Top HUD during gameplay (Compact & Sleek) -->
+        <div id="game-hud" class="hidden">
+            <!-- Normal Solo / Level Top Bar -->
+            <div class="hud-top-bar" id="solo-top-bar">
+                <div class="lives-container" id="lives-container" title="Nyawa">
+                    <span class="heart" id="heart-1">❤️</span>
+                    <span class="heart" id="heart-2">❤️</span>
+                    <span class="heart" id="heart-3">❤️</span>
+                </div>
+                
+                <div class="hud-center-pill">
+                    <span class="level-badge-compact" id="hud-level-badge">LV 1</span>
+                    <div class="progress-bar-track" id="hud-progress-container">
+                        <div class="progress-bar-fill" id="hud-progress-fill"></div>
+                    </div>
+                    <span class="progress-text-compact" id="hud-progress-text">0/4</span>
+                </div>
+
+                <div class="score-badge" id="score-display">
+                    <span class="score-star">⭐</span>
+                    <span id="current-score">0</span>
+                </div>
+
+                <div class="hud-actions">
+                    <button class="icon-btn" id="hud-sound-btn" title="Suara">🔊</button>
+                    <button class="icon-btn" id="hud-pause-btn" title="Jeda">⏸️</button>
+                </div>
+            </div>
+
+            <!-- Duel Top Bar (P1 vs P2 / BOT) -->
+            <div class="hud-top-bar duel-top-bar hidden" id="duel-top-bar">
+                <div class="duel-player-pill p1-pill">
+                    <span class="player-dot">🟡</span>
+                    <span class="player-hud-name">P1</span>
+                    <div class="duel-lives" id="duel-p1-lives">❤️❤️❤️</div>
+                    <div class="duel-score-badge" id="duel-p1-score">⭐ 0</div>
+                </div>
+
+                <div class="duel-target-badge" id="duel-target-badge">🎯 5</div>
+
+                <div class="duel-player-pill p2-pill">
+                    <div class="duel-score-badge" id="duel-p2-score">⭐ 0</div>
+                    <div class="duel-lives" id="duel-p2-lives">💙💙💙</div>
+                    <span class="player-hud-name" id="duel-p2-hud-name">BOT</span>
+                    <span class="player-dot">🔵</span>
+                </div>
+
+                <div class="hud-actions">
+                    <button class="icon-btn" id="hud-duel-pause-btn" title="Jeda">⏸️</button>
+                </div>
+            </div>
+
+            <!-- Compact Math Question Box -->
+            <div class="question-pill-container">
+                <div class="question-pill">
+                    <span class="operation-tag" id="operation-label">HUTAN PENJUMLAHAN</span>
+                    <span class="question-equation" id="question-text">4 + 1 = ?</span>
+                </div>
+                <div class="streak-banner" id="streak-banner">🔥 COMBO x3!</div>
+            </div>
+        </div>
+
+        <!-- Touch Controls for 2 Players (Mobile / Tablet) -->
+        <div id="duel-touch-controls" class="hidden">
+            <div class="touch-zone touch-left" id="touch-btn-p1">
+                <span>🟡 LOMPAT P1 [W]</span>
+            </div>
+            <div class="touch-zone touch-right" id="touch-btn-p2">
+                <span>🔵 LOMPAT P2 [↑]</span>
+            </div>
+        </div>
+
+        <!-- Ready / Tap to Start Prompt -->
+        <div id="ready-prompt" class="hidden">
+            👆 Ketuk Layar / Tekan SPASI untuk Terbang!
+        </div>
+
+        <!-- Main Menu Screen -->
+        <div class="screen" id="menu-screen">
+            <div class="card">
+                <svg class="hero-avatar" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="38" fill="#FBBF24" stroke="#D97706" stroke-width="3"/>
+                    <circle cx="40" cy="42" r="10" fill="#FFFFFF"/>
+                    <circle cx="64" cy="42" r="10" fill="#FFFFFF"/>
+                    <circle cx="43" cy="42" r="4.5" fill="#1E293B"/>
+                    <circle cx="67" cy="42" r="4.5" fill="#1E293B"/>
+                    <ellipse cx="54" cy="54" rx="9" ry="6" fill="#F97316"/>
+                    <ellipse cx="28" cy="58" rx="14" ry="8" fill="#F59E0B" transform="rotate(-15 28 58)"/>
+                    <polygon points="50,12 32,24 68,24" fill="#4F46E5"/>
+                    <rect x="36" y="24" width="28" height="5" fill="#312E81" rx="2"/>
+                    <circle cx="50" cy="11" r="3" fill="#FDE047"/>
+                </svg>
+                
+                <h1 class="game-title">MATH BIRD</h1>
+                <p class="game-subtitle">Petualangan Belajar Berhitung! 🧮 🐦</p>
+
+                <!-- Menu Buttons -->
+                <button class="btn-primary" id="open-levels-btn">
+                    <span>🗺️ Mode Petualangan (20 Level)</span>
+                </button>
+
+                <button class="btn-primary" id="open-duel-btn" style="background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);">
+                    <span>⚔️ Mode Duel Multiplayer (vs Bot / Teman)</span>
+                </button>
+                
+                <button class="btn-secondary" id="open-endless-btn" style="background: #eef2ff; border-color: #c7d2fe; color: #4338ca;">
+                    <span>♾️ Mode Latihan Bebas</span>
+                </button>
+                
+                <button class="btn-secondary" id="how-to-play-btn">
+                    <span>📖 Cara Bermain</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Duel Setup Screen -->
+        <div class="screen hidden" id="duel-screen">
+            <div class="card">
+                <div class="modal-header">
+                    <h2 style="font-size: 22px; color: #1e1b4b;">⚔️ Pengaturan Duel</h2>
+                    <button class="icon-btn-small" id="close-duel-btn">✖</button>
+                </div>
+
+                <!-- Lawan: Bot vs Teman -->
+                <div class="form-group">
+                    <label>Pilih Lawan Tanding:</label>
+                    <div class="pill-grid grid-2" id="duel-opponent-selector">
+                        <button class="pill-btn active" data-opponent="bot">🤖 Lawan BOT AI</button>
+                        <button class="pill-btn" data-opponent="human">👥 2 Pemain (1 Layar)</button>
+                    </div>
+                </div>
+
+                <!-- Tingkat Bot (Tampil hanya jika lawan bot) -->
+                <div class="form-group" id="bot-diff-group">
+                    <label>Tingkat Kepintaran BOT:</label>
+                    <div class="pill-grid" id="bot-diff-selector">
+                        <button class="pill-btn active" data-bot="easy">Budi (70%)</button>
+                        <button class="pill-btn" data-bot="medium">Prof. Owl (88%)</button>
+                        <button class="pill-btn" data-bot="hard">Einstein (98%)</button>
+                    </div>
+                </div>
+
+                <!-- Info Kontrol jika 2 Pemain -->
+                <div class="duel-control-info hidden" id="duel-controls-hint">
+                    <div class="p-control-tag p1-tag">🟡 Pemain 1: Tombol <strong>[W]</strong> / Sentuh Kiri</div>
+                    <div class="p-control-tag p2-tag">🔵 Pemain 2: Tombol <strong>[↑]</strong> / Sentuh Kanan</div>
+                </div>
+
+                <!-- Operasi Matematika -->
+                <div class="form-group">
+                    <label>Operasi Matematika:</label>
+                    <div class="pill-grid grid-5" id="duel-op-selector">
+                        <button class="pill-btn active" data-op="add" title="Penjumlahan">+</button>
+                        <button class="pill-btn" data-op="sub" title="Pengurangan">-</button>
+                        <button class="pill-btn" data-op="mul" title="Perkalian">×</button>
+                        <button class="pill-btn" data-op="div" title="Pembagian">÷</button>
+                        <button class="pill-btn" data-op="mixed" title="Campuran">Mix</button>
+                    </div>
+                </div>
+
+                <!-- Mode / Target Duel -->
+                <div class="form-group">
+                    <label>Mode Kemenangan Duel:</label>
+                    <div class="pill-grid grid-3" id="duel-target-selector">
+                        <button class="pill-btn active" data-target="survival">🔥 Hingga K.O.</button>
+                        <button class="pill-btn" data-target="10">🎯 10 Poin</button>
+                        <button class="pill-btn" data-target="20">🎯 20 Poin</button>
+                    </div>
+                </div>
+
+                <!-- Info Pemulihan Nyawa -->
+                <div class="duel-lifesteal-hint">
+                    💚 <strong>Fitur Pemulihan Nyawa:</strong> Setiap kali menjawab <strong>BENAR</strong>, 1 nyawa yang berkurang akan pulih kembali (+1 ❤️)!
+                </div>
+
+                <button class="btn-primary" id="start-duel-btn" style="background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);">
+                    <span>Mulai Duel Sekarang! ⚔️</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Duel Winner Screen -->
+        <div class="screen hidden" id="duel-winner-screen">
+            <div class="card">
+                <div class="winner-trophy-icon">🏆</div>
+                <h2 class="game-title" id="duel-winner-title" style="font-size: 26px; color: #f59e0b;">PEMAIN 1 MENANG!</h2>
+                <p class="game-subtitle" id="duel-winner-subtitle">Juara Berhitung Sejati!</p>
+
+                <!-- Duel Score Comparison Cards -->
+                <div class="duel-results-grid">
+                    <div class="duel-res-card p1-res">
+                        <div class="res-player-name">🟡 Pemain 1</div>
+                        <div class="res-score" id="duel-res-p1-score">5</div>
+                        <div class="res-stat" id="duel-res-p1-acc">Akurasi: 100%</div>
+                        <div class="res-stat" id="duel-res-p1-lives">❤️ ❤️ ❤️</div>
+                    </div>
+                    <div class="duel-res-vs">VS</div>
+                    <div class="duel-res-card p2-res">
+                        <div class="res-player-name" id="duel-res-p2-name">🔵 Bot Pintar</div>
+                        <div class="res-score" id="duel-res-p2-score">3</div>
+                        <div class="res-stat" id="duel-res-p2-acc">Akurasi: 75%</div>
+                        <div class="res-stat" id="duel-res-p2-lives">💙 💙 🖤</div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" id="restart-duel-btn" style="background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);">
+                    <span>Tanding Ulang ⚔️</span>
+                </button>
+                <button class="btn-secondary" id="change-duel-setup-btn">
+                    <span>Ganti Pengaturan Duel ⚙️</span>
+                </button>
+                <button class="btn-secondary" id="duel-to-menu-btn">
+                    <span>Menu Utama 🏠</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Level Select Screen -->
+        <div class="screen hidden" id="levels-screen">
+            <div class="card level-select-card">
+                <div class="modal-header">
+                    <h2 style="font-size: 22px; color: #1e1b4b;">Pilih Level Petualangan</h2>
+                    <button class="icon-btn-small" id="close-levels-btn">✖</button>
+                </div>
+
+                <!-- World Tabs -->
+                <div class="world-tabs" id="world-tabs">
+                    <button class="world-tab active" data-world="1">🌿 Tambah</button>
+                    <button class="world-tab" data-world="2">🍂 Kurang</button>
+                    <button class="world-tab" data-world="3">⚡ Kali</button>
+                    <button class="world-tab" data-world="4">🌊 Bagi</button>
+                    <button class="world-tab" data-world="5">👑 Master</button>
+                </div>
+
+                <div class="world-title-badge" id="current-world-title">Babak 1: Hutan Penjumlahan (+)</div>
+
+                <!-- Level Grid (dynamically rendered) -->
+                <div class="level-grid" id="level-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Endless / Custom Setup Screen -->
+        <div class="screen hidden" id="endless-screen">
+            <div class="card">
+                <div class="modal-header">
+                    <h2 style="font-size: 22px; color: #1e1b4b;">Pengaturan Mode Bebas</h2>
+                    <button class="icon-btn-small" id="close-endless-btn">✖</button>
+                </div>
+
+                <!-- Pilihan Operasi Matematika -->
+                <div class="form-group">
+                    <label>Operasi Matematika:</label>
+                    <div class="pill-grid grid-5" id="op-selector">
+                        <button class="pill-btn active" data-op="add" title="Penjumlahan">+</button>
+                        <button class="pill-btn" data-op="sub" title="Pengurangan">-</button>
+                        <button class="pill-btn" data-op="mul" title="Perkalian">×</button>
+                        <button class="pill-btn" data-op="div" title="Pembagian">÷</button>
+                        <button class="pill-btn" data-op="mixed" title="Campuran">Mix</button>
+                    </div>
+                </div>
+
+                <!-- Pilihan Tingkat Kesulitan -->
+                <div class="form-group">
+                    <label>Tingkat Kesulitan:</label>
+                    <div class="pill-grid" id="diff-selector">
+                        <button class="pill-btn active" data-diff="easy">Mudah</button>
+                        <button class="pill-btn" data-diff="medium">Sedang</button>
+                        <button class="pill-btn" data-diff="hard">Mahir</button>
+                    </div>
+                </div>
+
+                <!-- Mode Nyawa -->
+                <div class="form-group">
+                    <label>Mode Nyawa:</label>
+                    <div class="pill-grid grid-2" id="mode-selector">
+                        <button class="pill-btn active" data-mode="learn">❤️ Belajar (3 Nyawa)</button>
+                        <button class="pill-btn" data-mode="classic">⚡ Tantangan (1 Nyawa)</button>
+                    </div>
+                </div>
+
+                <button class="btn-primary" id="start-endless-btn">
+                    <span>Mulai Mode Bebas! 🚀</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- How To Play Screen -->
+        <div class="screen hidden" id="instructions-screen">
+            <div class="card">
+                <h2 style="font-size: 24px; color: #1e1b4b; margin-bottom: 12px;">Cara Bermain 📖</h2>
+                
+                <div class="instructions-list">
+                    <div class="instruction-item">
+                        <div class="instruction-icon">👆</div>
+                        <div><strong>Terbang:</strong> Ketuk layar atau tekan <strong>SPASI</strong> untuk membuat burung mengepakkan sayap.</div>
+                    </div>
+                    <div class="instruction-item">
+                        <div class="instruction-icon">🧮</div>
+                        <div><strong>Hitung:</strong> Perhatikan soal matematika (+, -, ×, ÷) yang muncul di bagian atas layar.</div>
+                    </div>
+                    <div class="instruction-item">
+                        <div class="instruction-icon">🎯</div>
+                        <div><strong>Pilih Gerbang:</strong> Terbanglah melewati gerbang dengan <strong>angka jawaban yang benar</strong>!</div>
+                    </div>
+                    <div class="instruction-item">
+                        <div class="instruction-icon">🎁</div>
+                        <div><strong>Gerbang Spesial:</strong> Kadang muncul gerbang khusus pembawa efek:
+                            <div style="font-size: 11.5px; color: #475569; margin-top: 4px; display: flex; flex-direction: column; gap: 2px;">
+                                <span>💖 <strong>Heal:</strong> Memulihkan 1 nyawa yang hilang (+1 ❤️).</span>
+                                <span>🛡️ <strong>Shield:</strong> Perisai kebal 1x tabrakan pipa.</span>
+                                <span>⚡ <strong>2X Poin:</strong> Poin ganda untuk 3 soal berikutnya.</span>
+                                <span>❄️ <strong>Slow-Mo:</strong> Memperlambat terbang selama 6 detik.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" id="back-from-instructions-btn">
+                    <span>Kembali ke Menu</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Pause Screen -->
+        <div class="screen hidden" id="pause-screen">
+            <div class="card">
+                <h2 style="font-size: 26px; color: #1e1b4b; margin-bottom: 8px;">Permainan Dijeda ⏸️</h2>
+                <p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">Istirahat sejenak sambil mengingat rumus!</p>
+
+                <button class="btn-primary" id="resume-btn">
+                    <span>Lanjutkan Terbang ▶️</span>
+                </button>
+                <button class="btn-secondary" id="quit-to-menu-btn">
+                    <span>Menu Utama 🏠</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Level Cleared / Victory Screen -->
+        <div class="screen hidden" id="victory-screen">
+            <div class="card">
+                <h2 class="game-title" style="font-size: 28px; color: #10b981;">Level Selesai! 🎉</h2>
+                <p class="game-subtitle" id="victory-level-name">Babak 1: Penjumlahan Pemula</p>
+
+                <!-- 3 Star Rating Animation -->
+                <div class="stars-awarded" id="stars-awarded">
+                    <span class="victory-star" id="v-star-1">⭐</span>
+                    <span class="victory-star" id="v-star-2">⭐</span>
+                    <span class="victory-star" id="v-star-3">⭐</span>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value score-val" id="victory-score">0</div>
+                        <div class="stat-label">Skor Level</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value acc-val" id="victory-accuracy">100%</div>
+                        <div class="stat-label">Akurasi</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="victory-time">5/5</div>
+                        <div class="stat-label">Soal Benar</div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" id="next-level-btn">
+                    <span>Level Berikutnya ➡️</span>
+                </button>
+                <button class="btn-secondary" id="replay-level-btn">
+                    <span>Main Ulang 🔄</span>
+                </button>
+                <button class="btn-secondary" id="victory-select-level-btn">
+                    <span>Pilih Level Lain 🗺️</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Over & Learning Evaluation Screen -->
+        <div class="screen hidden" id="gameover-screen">
+            <div class="card">
+                <h2 class="game-title" id="gameover-title" style="font-size: 28px;">Permainan Selesai!</h2>
+                <p class="game-subtitle" id="gameover-subtitle">Tetap semangat, mari belajar lagi!</p>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value score-val" id="final-score">0</div>
+                        <div class="stat-label">Skor Akhir</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="final-high-score">0</div>
+                        <div class="stat-label">Rekor Terbaik</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value acc-val" id="final-accuracy">100%</div>
+                        <div class="stat-label">Akurasi</div>
+                    </div>
+                </div>
+
+                <!-- Learning Evaluation Details -->
+                <div id="evaluation-container"></div>
+
+                <button class="btn-primary" id="restart-btn">
+                    <span>Coba Lagi 🔄</span>
+                </button>
+                <button class="btn-secondary" id="gameover-levels-btn">
+                    <span>Pilih Level 🗺️</span>
+                </button>
+                <button class="btn-secondary" id="gameover-menu-btn">
+                    <span>Menu Utama 🏠</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Scripts -->
+    <script src="mathGenerator.js"></script>
+    <script src="audio.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
