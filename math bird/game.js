@@ -381,10 +381,14 @@ class MathBirdGame {
 
                 if (this.duelOpponent === 'bot') {
                     this.dom.botDiffGroup.classList.remove('hidden');
+                    this.dom.botDiffGroup.style.display = 'block';
                     this.dom.duelControlsHint.classList.add('hidden');
+                    this.dom.duelControlsHint.style.display = 'none';
                 } else {
                     this.dom.botDiffGroup.classList.add('hidden');
+                    this.dom.botDiffGroup.style.display = 'none';
                     this.dom.duelControlsHint.classList.remove('hidden');
+                    this.dom.duelControlsHint.style.display = 'flex';
                 }
             });
         });
@@ -668,6 +672,9 @@ class MathBirdGame {
             this.dom.soloTopBar.classList.remove('hidden');
             this.dom.duelTopBar.classList.add('hidden');
             this.dom.duelTouchControls.classList.add('hidden');
+            this.dom.soloTopBar.style.display = 'flex';
+            this.dom.duelTopBar.style.display = 'none';
+            this.dom.duelTouchControls.style.display = 'none';
             this.dom.hudLevelBadge.textContent = `LV ${this.currentLevelId}`;
             this.dom.operationLabel.textContent = `${levelDef.worldName.toUpperCase()} - ${levelDef.name}`;
             this.dom.hudProgressContainer.style.display = 'flex';
@@ -689,6 +696,9 @@ class MathBirdGame {
             this.dom.soloTopBar.classList.add('hidden');
             this.dom.duelTopBar.classList.remove('hidden');
             this.dom.duelTouchControls.classList.toggle('hidden', this.bird2.isBot); // Show touch only if 2 humans
+            this.dom.soloTopBar.style.display = 'none';
+            this.dom.duelTopBar.style.display = 'flex';
+            this.dom.duelTouchControls.style.display = this.bird2.isBot ? 'none' : 'flex';
 
             this.dom.duelP2HudName.textContent = this.bird2.tag;
             this.dom.duelTargetBadge.textContent = (this.duelTargetMode === 'survival') ? '🔥 SURVIVAL K.O.' : `🎯 ${this.duelTargetScore}`;
@@ -705,6 +715,9 @@ class MathBirdGame {
             this.dom.soloTopBar.classList.remove('hidden');
             this.dom.duelTopBar.classList.add('hidden');
             this.dom.duelTouchControls.classList.add('hidden');
+            this.dom.soloTopBar.style.display = 'flex';
+            this.dom.duelTopBar.style.display = 'none';
+            this.dom.duelTouchControls.style.display = 'none';
             this.dom.hudLevelBadge.textContent = 'BEBAS';
             this.dom.hudProgressContainer.style.display = 'none';
             this.updateHUDOperationLabel();
@@ -1607,12 +1620,13 @@ class MathBirdGame {
         this.drawGround();
         this.drawParticles();
 
-        // Draw Player 1
-        this.drawSingleBird(this.bird, 'yellow', 'P1');
+        // Draw Player 1 (Only show tag badge in duel mode)
+        const p1Tag = (this.gameMode === 'duel') ? 'P1' : null;
+        this.drawSingleBird(this.bird, 'yellow', p1Tag);
 
         // Draw Player 2 / Bot in Duel Mode
         if (this.gameMode === 'duel') {
-            this.drawSingleBird(this.bird2, 'blue', this.bird2.tag);
+            this.drawSingleBird(this.bird2, 'blue', this.bird2.tag || 'BOT');
         }
 
         this.drawFloatingTexts();
@@ -1893,7 +1907,7 @@ class MathBirdGame {
         this.ctx.restore();
     }
 
-    drawSingleBird(b, colorTheme = 'yellow', tag = 'P1') {
+    drawSingleBird(b, colorTheme = 'yellow', tag = null) {
         this.ctx.save();
         this.ctx.translate(b.x, b.y);
         this.ctx.rotate(b.rotation);
@@ -1920,23 +1934,31 @@ class MathBirdGame {
 
         const isYellow = (colorTheme === 'yellow');
 
-        // Floating Tag Badge
-        this.ctx.save();
-        this.ctx.rotate(-b.rotation); // Keep tag upright
-        this.ctx.fillStyle = (b.doubleScoreCount > 0) ? '#f59e0b' : (isYellow ? '#f59e0b' : '#0284c7');
-        this.ctx.beginPath();
-        this.ctx.roundRect ? this.ctx.roundRect(-16, -42, 32, 16, 8) : this.ctx.rect(-16, -42, 32, 16);
-        this.ctx.fill();
-        this.ctx.strokeStyle = '#ffffff';
-        this.ctx.lineWidth = 1.5;
-        this.ctx.stroke();
+        // Floating Tag Badge (Only displayed in duel mode or when doubleScore powerup is active)
+        const hasDoubleScore = (b.doubleScoreCount > 0);
+        if (tag || hasDoubleScore) {
+            this.ctx.save();
+            this.ctx.rotate(-b.rotation); // Keep tag upright
+            this.ctx.fillStyle = hasDoubleScore ? '#f59e0b' : (isYellow ? '#f59e0b' : '#0284c7');
+            
+            const badgeText = tag ? (hasDoubleScore ? `${tag}⚡` : tag) : '⚡2X';
+            const badgeWidth = tag ? 32 : 38;
+            const badgeOffset = -badgeWidth / 2;
 
-        this.ctx.fillStyle = '#ffffff';
-        this.ctx.font = '800 11px Fredoka, Outfit, sans-serif';
-        this.ctx.textAlign = 'center';
-        this.ctx.textBaseline = 'middle';
-        this.ctx.fillText((b.doubleScoreCount > 0) ? `${tag}⚡` : tag, 0, -34);
-        this.ctx.restore();
+            this.ctx.beginPath();
+            this.ctx.roundRect ? this.ctx.roundRect(badgeOffset, -42, badgeWidth, 16, 8) : this.ctx.rect(badgeOffset, -42, badgeWidth, 16);
+            this.ctx.fill();
+            this.ctx.strokeStyle = '#ffffff';
+            this.ctx.lineWidth = 1.5;
+            this.ctx.stroke();
+
+            this.ctx.fillStyle = '#ffffff';
+            this.ctx.font = '800 11px Fredoka, Outfit, sans-serif';
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'middle';
+            this.ctx.fillText(badgeText, 0, -34);
+            this.ctx.restore();
+        }
 
         // Back Wing
         const wingY = Math.sin(b.wingPhase) * 6;

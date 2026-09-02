@@ -88,7 +88,7 @@ body {
 }
 
 #game-hud.hidden {
-    display: none;
+    display: none !important;
 }
 
 .hud-top-bar {
@@ -96,6 +96,12 @@ body {
     justify-content: space-between;
     align-items: center;
     gap: 6px;
+}
+
+.hud-top-bar.hidden,
+.solo-top-bar.hidden,
+.duel-top-bar.hidden {
+    display: none !important;
 }
 
 .lives-container {
@@ -303,6 +309,11 @@ body {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
+}
+
+/* General hidden utility for non-screen elements */
+.hidden:not(.screen):not(#ready-prompt) {
+    display: none !important;
 }
 
 .card {
@@ -800,6 +811,10 @@ body {
     gap: 4px;
 }
 
+.duel-top-bar.hidden {
+    display: none !important;
+}
+
 .duel-player-pill {
     display: flex;
     align-items: center;
@@ -861,6 +876,11 @@ body {
     border-radius: 14px;
     padding: 8px 12px;
     border: 1px solid #e2e8f0;
+}
+
+.duel-control-info.hidden,
+#bot-diff-group.hidden {
+    display: none !important;
 }
 
 .p-control-tag {
