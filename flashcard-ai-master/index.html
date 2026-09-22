@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlashMind - Flashcard & Spaced Repetition Study App</title>
+  <meta name="description" content="Aplikasi penghafal materi efektif dengan algoritma Spaced Repetition System (SRS), 3D flip card, kuis sprint ujian, dan pembuat deck custom." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">🗂️</div>
+        <div>
+          <h1>FlashMind <span class="accent-text">SRS</span></h1>
+          <p class="subtitle">Aplikasi Hafalan Ilmiah Berbasis Spaced Repetition System</p>
+        </div>
+      </div>
+      <div class="header-stats">
+        <div class="stat-pill">
+          <span class="lbl">Kartu Dikuasai</span>
+          <span class="val" id="mastered-count">0 Kartu</span>
+        </div>
+        <div class="stat-pill">
+          <span class="lbl">Streak Belajar</span>
+          <span class="val" id="streak-count">🔥 1 Hari</span>
+        </div>
+        <button id="btn-sound" class="btn-icon" title="Toggle Sound">🔊</button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-bar">
+      <button class="nav-btn active" data-tab="study">📖 Sesi Belajar (SRS)</button>
+      <button class="nav-btn" data-tab="decks">📚 Koleksi Deck Kartu</button>
+      <button class="nav-btn" data-tab="quiz">⚡ Ujian Kuis Kilat</button>
+      <button class="nav-btn" data-tab="stats">📈 Analisis Memori</button>
+    </nav>
+
+    <!-- TAB 1: Study Mode (3D Flip Card & SRS Rating) -->
+    <section class="tab-pane active" id="tab-study">
+      <div class="study-wrapper">
+        <div class="study-hud">
+          <div class="deck-indicator">
+            <span class="hud-label">Deck Aktif:</span>
+            <strong id="current-deck-name">Biologi & Anatomi Tubuh</strong>
+          </div>
+          <div class="card-progress">
+            <span id="study-progress-text">Kartu 1 dari 10</span>
+          </div>
+        </div>
+
+        <!-- 3D Card Scene -->
+        <div class="card-scene">
+          <div class="flashcard-3d" id="active-flashcard">
+            <!-- Front Face -->
+            <div class="card-face card-front">
+              <div class="face-tag">SISI DEPAN (PERTANYAAN)</div>
+              <div class="card-question" id="card-front-text">Apa fungsi utama dari organel Mitokondria di dalam sel?</div>
+              <div class="flip-hint">💡 Klik kartu untuk membalik & melihat jawaban</div>
+            </div>
+
+            <!-- Back Face -->
+            <div class="card-face card-back">
+              <div class="face-tag">SISI BELAKANG (PENJELASAN)</div>
+              <div class="card-answer" id="card-back-text">Sebagai 'The Powerhouse of the Cell', menghasilkan energi ATP melalui respirasi sel.</div>
+              <div class="flip-hint">🔄 Klik kartu untuk membalik kembali</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SRS Rating Buttons (Shown after card flip) -->
+        <div class="srs-rating-container" id="srs-controls">
+          <div class="rating-title">Seberapa baik kamu mengingat kartu ini?</div>
+          <div class="srs-buttons">
+            <button class="btn-srs srs-again" data-rating="again">
+              <span class="srs-emoji">🔴</span>
+              <span class="srs-label">Lupa Lagi</span>
+              <span class="srs-interval">&lt; 10 Menit</span>
+            </button>
+            <button class="btn-srs srs-hard" data-rating="hard">
+              <span class="srs-emoji">🟡</span>
+              <span class="srs-label">Sulit / Ragu</span>
+              <span class="srs-interval">1 Hari</span>
+            </button>
+            <button class="btn-srs srs-good" data-rating="good">
+              <span class="srs-emoji">🟢</span>
+              <span class="srs-label">Ingat Baik</span>
+              <span class="srs-interval">3 Hari</span>
+            </button>
+            <button class="btn-srs srs-easy" data-rating="easy">
+              <span class="srs-emoji">🟣</span>
+              <span class="srs-label">Sangat Mudah</span>
+              <span class="srs-interval">7 Hari</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="study-nav-buttons">
+          <button class="btn-secondary" id="btn-prev-card">◀ Kartu Sebelumnya</button>
+          <button class="btn-secondary" id="btn-flip-trigger">🔄 Balik Kartu (Spasi)</button>
+          <button class="btn-secondary" id="btn-next-card">Kartu Berikutnya ▶</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: Deck Manager -->
+    <section class="tab-pane" id="tab-decks">
+      <div class="decks-wrapper">
+        <div class="decks-header">
+          <div>
+            <h2>📚 Koleksi & Pengelola Deck</h2>
+            <p>Pilih deck untuk dipelajari, tambah deck baru, atau ekspor data hafalan.</p>
+          </div>
+          <div class="deck-action-group">
+            <button class="btn-primary" id="btn-create-deck">➕ Buat Deck Baru</button>
+            <button class="btn-secondary" id="btn-create-card">🃏 Tambah Kartu</button>
+            <button class="btn-secondary" id="btn-export-decks">💾 Ekspor JSON</button>
+          </div>
+        </div>
+
+        <div class="decks-grid" id="decks-grid">
+          <!-- Loaded by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: Quiz Sprint Mode -->
+    <section class="tab-pane" id="tab-quiz">
+      <div class="quiz-wrapper">
+        <div class="quiz-header">
+          <h2>⚡ Ujian Kuis Cepat (Quiz Sprint)</h2>
+          <p>Uji daya ingatmu dengan format pilihan ganda otomatis dari kartu-kartu yang sedang dipelajari.</p>
+        </div>
+
+        <div class="quiz-box" id="quiz-box">
+          <div class="quiz-status">
+            <span id="quiz-progress">Soal 1 / 5</span>
+            <span id="quiz-score-live">Skor: 0</span>
+          </div>
+          <h3 class="quiz-q-text" id="quiz-q-text">Pertanyaan kuis akan dimuat di sini...</h3>
+          <div class="quiz-options-list" id="quiz-options">
+            <!-- Loaded by JS -->
+          </div>
+          <div class="quiz-result-msg" id="quiz-result-msg"></div>
+          <button class="btn-primary" id="btn-quiz-next" style="display:none; margin-top:14px;">Lanjut Soal Berikutnya ➔</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: Memory Analytics -->
+    <section class="tab-pane" id="tab-stats">
+      <div class="stats-wrapper">
+        <div class="stats-header">
+          <h2>📈 Analisis Kurva Retensi Memori</h2>
+          <p>Pola interval Spaced Repetition membantu menahan informasi dari kurva lupa Ebbinghaus.</p>
+        </div>
+
+        <div class="retention-grid">
+          <div class="ret-card">
+            <h4>Tingkat Penguasaan (Mastery Level)</h4>
+            <div class="mastery-bar-wrap">
+              <div class="mastery-bar-fill" id="mastery-fill" style="width: 45%;"></div>
+            </div>
+            <p id="mastery-percentage-text">45% Materi Telah Menetap di Memori Jangka Panjang</p>
+          </div>
+
+          <div class="ret-card">
+            <h4>Distribusi Kartu Berdasarkan Kotak SRS:</h4>
+            <ul class="srs-box-list" id="srs-box-list">
+              <li><span class="box-tag b1">Kotak 1 (Baru/Lupa):</span> <strong id="box1-count">0 kartu</strong></li>
+              <li><span class="box-tag b2">Kotak 2 (Menengah):</span> <strong id="box2-count">0 kartu</strong></li>
+              <li><span class="box-tag b3">Kotak 3 (Mahir):</span> <strong id="box3-count">0 kartu</strong></li>
+              <li><span class="box-tag b4">Kotak 4 (Permanen):</span> <strong id="box4-count">0 kartu</strong></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Modal: Create Deck -->
+  <div class="modal-overlay" id="deck-modal">
+    <div class="modal-card">
+      <h3>Buat Deck Kartu Baru</h3>
+      <form id="deck-form">
+        <div class="form-group">
+          <label for="deck-name-input">Nama Deck</label>
+          <input type="text" id="deck-name-input" required placeholder="Contoh: Sejarah Dunia Abad 20" />
+        </div>
+        <div class="form-group">
+          <label for="deck-icon-input">Ikon Emoji</label>
+          <input type="text" id="deck-icon-input" value="🌍" style="width: 60px; text-align: center;" />
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn-primary">Buat Deck</button>
+          <button type="button" class="btn-secondary" id="btn-close-deck-modal">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Create Card -->
+  <div class="modal-overlay" id="card-modal">
+    <div class="modal-card">
+      <h3>Tambah Kartu Flashcard</h3>
+      <form id="card-form">
+        <div class="form-group">
+          <label for="card-deck-select">Pilih Deck Tujuan</label>
+          <select id="card-deck-select"></select>
+        </div>
+        <div class="form-group">
+          <label for="card-front-input">Sisi Depan (Pertanyaan / Istilah)</label>
+          <textarea id="card-front-input" required rows="3" placeholder="Tulis pertanyaan atau kata kunci..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="card-back-input">Sisi Belakang (Jawaban / Definisi)</label>
+          <textarea id="card-back-input" required rows="3" placeholder="Tulis jawaban lengkap atau rumus..."></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn-primary">Simpan Kartu</button>
+          <button type="button" class="btn-secondary" id="btn-close-card-modal">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

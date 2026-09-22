@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FocusStudy Hub - Smart Pomodoro, Kanban & Ambient Study</title>
+  <meta name="description" content="Aplikasi produktivitas belajar pelajar terlengkap: Smart Pomodoro timer, Kanban task manager, Ambient focus noise synthesizer, dan statistik belajar." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">⏱️</div>
+        <div>
+          <h1>FocusStudy <span class="accent-gradient">Hub</span></h1>
+          <p class="subtitle">Platform Manajemen Fokus, Tugas & Waktu Belajar Pelajar</p>
+        </div>
+      </div>
+      <div class="header-status">
+        <div class="stat-pill">
+          <span class="lbl">Fokus Hari Ini</span>
+          <span class="val" id="today-focus-time">0 Jam 0 Menit</span>
+        </div>
+        <div class="stat-pill">
+          <span class="lbl">Sesi Pomodoro</span>
+          <span class="val" id="total-sessions-val">0 Sesi</span>
+        </div>
+        <div class="stat-pill">
+          <span class="lbl">Tugas Tuntas</span>
+          <span class="val" id="completed-tasks-val">0 Tugas</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-bar">
+      <button class="nav-btn active" data-tab="timer">⏳ Pomodoro Fokus</button>
+      <button class="nav-btn" data-tab="kanban">📋 Papan Tugas (Kanban)</button>
+      <button class="nav-btn" data-tab="ambient">🎧 Suara Relaksasi (Ambient)</button>
+      <button class="nav-btn" data-tab="notes">📝 Catatan Cepat</button>
+      <button class="nav-btn" data-tab="stats">📊 Statistik Belajar</button>
+    </nav>
+
+    <!-- TAB 1: Pomodoro Timer -->
+    <section class="tab-pane active" id="tab-timer">
+      <div class="timer-container">
+        <!-- Mode Switcher -->
+        <div class="timer-modes">
+          <button class="mode-btn active" data-mode="focus" data-time="25">📚 Sesi Fokus (25m)</button>
+          <button class="mode-btn" data-mode="short" data-time="5">☕ Istirahat Pendek (5m)</button>
+          <button class="mode-btn" data-mode="long" data-time="15">🌴 Istirahat Panjang (15m)</button>
+        </div>
+
+        <!-- Radial Timer Display -->
+        <div class="timer-circle-wrap">
+          <svg class="progress-ring" width="280" height="280">
+            <circle class="progress-ring__bg" stroke="rgba(255,255,255,0.08)" stroke-width="12" fill="transparent" r="120" cx="140" cy="140" />
+            <circle id="timer-progress-bar" class="progress-ring__bar" stroke="#06b6d4" stroke-width="12" stroke-linecap="round" fill="transparent" r="120" cx="140" cy="140" />
+          </svg>
+          <div class="timer-digits-box">
+            <div class="timer-digits" id="timer-time">25:00</div>
+            <div class="timer-mode-label" id="current-mode-label">SESI FOKUS BELAJAR</div>
+          </div>
+        </div>
+
+        <!-- Timer Controls -->
+        <div class="timer-controls">
+          <button class="btn-start" id="btn-timer-toggle">▶️ Mulai Belajar</button>
+          <button class="btn-secondary" id="btn-timer-reset">🔄 Reset</button>
+          <button class="btn-secondary" id="btn-timer-skip">⏭️ Lewati Sesi</button>
+        </div>
+
+        <div class="current-task-banner" id="active-task-banner">
+          📌 Tugas Aktif: <strong id="active-task-name">Belum memilih tugas dari Kanban</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: Kanban Task Board -->
+    <section class="tab-pane" id="tab-kanban">
+      <div class="kanban-wrapper">
+        <div class="kanban-header">
+          <div>
+            <h2>📋 Manajemen Tugas Belajar</h2>
+            <p>Atur deadline, prioritas, dan pantau kemajuan tugas sekolahmu.</p>
+          </div>
+          <button class="btn-primary" id="btn-open-task-modal">➕ Tambah Tugas Baru</button>
+        </div>
+
+        <div class="kanban-board">
+          <!-- Column 1: To Do -->
+          <div class="kanban-col" data-status="todo">
+            <div class="col-head">
+              <div class="col-title">
+                <span class="status-dot dot-todo"></span>
+                <h3>Daftar Tugas (To-Do)</h3>
+              </div>
+              <span class="badge-count" id="count-todo">0</span>
+            </div>
+            <div class="task-list" id="list-todo">
+              <!-- Loaded by JS -->
+            </div>
+          </div>
+
+          <!-- Column 2: In Progress -->
+          <div class="kanban-col" data-status="in-progress">
+            <div class="col-head">
+              <div class="col-title">
+                <span class="status-dot dot-progress"></span>
+                <h3>Sedang Dikerjakan</h3>
+              </div>
+              <span class="badge-count" id="count-progress">0</span>
+            </div>
+            <div class="task-list" id="list-in-progress">
+              <!-- Loaded by JS -->
+            </div>
+          </div>
+
+          <!-- Column 3: Done -->
+          <div class="kanban-col" data-status="done">
+            <div class="col-head">
+              <div class="col-title">
+                <span class="status-dot dot-done"></span>
+                <h3>Selesai</h3>
+              </div>
+              <span class="badge-count" id="count-done">0</span>
+            </div>
+            <div class="task-list" id="list-done">
+              <!-- Loaded by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: Ambient Sound Synthesizer -->
+    <section class="tab-pane" id="tab-ambient">
+      <div class="ambient-wrapper">
+        <div class="ambient-header">
+          <h2>🎧 Suara Fokus & Relaksasi Belajar</h2>
+          <p>Dihasilkan secara murni melalui Web Audio Synthesizer untuk membantu konsentrasi tanpa koneksi streaming.</p>
+        </div>
+
+        <div class="ambient-grid">
+          <!-- Card 1: Rain & Water Stream -->
+          <div class="ambient-card" id="card-sound-rain">
+            <div class="amb-icon">🌧️</div>
+            <h3>Hujan Rintik Alami</h3>
+            <p>Frekuensi pink noise menenangkan untuk meredam kebisingan ruangan.</p>
+            <div class="amb-controls">
+              <button class="btn-amb-toggle" data-sound="rain">▶️ Putar</button>
+              <input type="range" class="amb-volume" data-sound="rain" min="0" max="1" step="0.05" value="0.5" />
+            </div>
+          </div>
+
+          <!-- Card 2: Alpha Brain Waves -->
+          <div class="ambient-card" id="card-sound-alpha">
+            <div class="amb-icon">🧠</div>
+            <h3>Gelombang Alpha (10 Hz)</h3>
+            <p>Binaural beat pemicu fokus mendalam dan daya serap memori cepat.</p>
+            <div class="amb-controls">
+              <button class="btn-amb-toggle" data-sound="alpha">▶️ Putar</button>
+              <input type="range" class="amb-volume" data-sound="alpha" min="0" max="1" step="0.05" value="0.5" />
+            </div>
+          </div>
+
+          <!-- Card 3: Deep White Noise -->
+          <div class="ambient-card" id="card-sound-whitenoise">
+            <div class="amb-icon">💨</div>
+            <h3>White Noise Murni</h3>
+            <p>Spektrum suara statis seragam untuk isolasi konsentrasi saat membaca.</p>
+            <div class="amb-controls">
+              <button class="btn-amb-toggle" data-sound="whitenoise">▶️ Putar</button>
+              <input type="range" class="amb-volume" data-sound="whitenoise" min="0" max="1" step="0.05" value="0.5" />
+            </div>
+          </div>
+
+          <!-- Card 4: Tibetan Meditation Bell Tone -->
+          <div class="ambient-card" id="card-sound-drone">
+            <div class="amb-icon">🪷</div>
+            <h3>Harmoni Solfeggio 528 Hz</h3>
+            <p>Frekuensi resonansi harmonis untuk ketenangan pikiran dan meditasi.</p>
+            <div class="amb-controls">
+              <button class="btn-amb-toggle" data-sound="drone">▶️ Putar</button>
+              <input type="range" class="amb-volume" data-sound="drone" min="0" max="1" step="0.05" value="0.5" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: Scratchpad Notes -->
+    <section class="tab-pane" id="tab-notes">
+      <div class="notes-wrapper">
+        <div class="notes-header">
+          <h2>📝 Buku Catatan Cepat & Rumus</h2>
+          <span class="auto-save-tag" id="notes-save-status">Tersimpan otomatis di browser</span>
+        </div>
+        <textarea id="study-scratchpad" class="scratchpad-area" placeholder="Tulis ringkasan materi, rumus penting, jadwal ujian, atau catatan kelas di sini..."></textarea>
+      </div>
+    </section>
+
+    <!-- TAB 5: Weekly Statistics -->
+    <section class="tab-pane" id="tab-stats">
+      <div class="stats-wrapper">
+        <div class="stats-head">
+          <h2>📊 Statistik & Ringkasan Belajar</h2>
+          <p>Pantau konsistensi dan alokasi waktu belajarmu sepanjang minggu.</p>
+        </div>
+        <div class="stats-cards-grid">
+          <div class="summary-card">
+            <span class="sc-title">Total Menit Belajar</span>
+            <span class="sc-val" id="stat-total-minutes">0 Min</span>
+          </div>
+          <div class="summary-card">
+            <span class="sc-title">Sesi Pomodoro Selesai</span>
+            <span class="sc-val" id="stat-sessions-done">0 Sesi</span>
+          </div>
+          <div class="summary-card">
+            <span class="sc-title">Tingkat Penyelesaian Tugas</span>
+            <span class="sc-val" id="stat-task-percent">0%</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Task Modal -->
+  <div class="modal-overlay" id="task-modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>Tambah Tugas Belajar Baru</h3>
+        <button class="btn-close-modal" id="btn-close-task-modal">&times;</button>
+      </div>
+      <form id="task-form">
+        <div class="form-group">
+          <label for="task-input-title">Judul Tugas / Materi</label>
+          <input type="text" id="task-input-title" required placeholder="Contoh: Latihan Soal Integral Matematika" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="task-input-subject">Mata Pelajaran</label>
+            <select id="task-input-subject">
+              <option value="Matematika">Matematika</option>
+              <option value="Fisika">Fisika</option>
+              <option value="Kimia">Kimia</option>
+              <option value="Biologi">Biologi</option>
+              <option value="Informatika">Informatika / Coding</option>
+              <option value="Bahasa">Bahasa (Inggris/Indonesia)</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="task-input-priority">Prioritas</label>
+            <select id="task-input-priority">
+              <option value="high">🔴 Tinggi (Mendesak)</option>
+              <option value="medium" selected>🟡 Sedang</option>
+              <option value="low">🟢 Rendah</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="task-input-est">Estimasi Sesi Pomodoro (1 Sesi = 25m)</label>
+          <input type="number" id="task-input-est" min="1" max="10" value="2" />
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">💾 Simpan Tugas</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

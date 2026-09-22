@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CodeBot Logic Runner - Game Algoritma & Logika Pemrograman</title>
+  <meta name="description" content="Belajar logika pemrograman dan algoritma dengan menyusun blok instruksi untuk mengarahkan robot CodeBot ke portal tujuan." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <div class="brand-icon">🤖</div>
+        <div>
+          <h1>CodeBot <span class="accent-text">Logic Runner</span></h1>
+          <p class="tagline">Lab Algoritma & Berpikir Komputasional Pelajar</p>
+        </div>
+      </div>
+      <div class="header-tools">
+        <div class="stat-badge">
+          <span class="lbl">Level</span>
+          <span class="val" id="level-title">Level 1: Langkah Pertama</span>
+        </div>
+        <div class="stat-badge">
+          <span class="lbl">Bintang</span>
+          <span class="val" id="star-count">⭐ 0 / 24</span>
+        </div>
+        <button id="btn-sound" class="btn-icon" title="Toggle Sound">🔊</button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Grid -->
+    <main class="main-workspace">
+      <!-- Left: Toolbox & Command Builder -->
+      <section class="toolbox-panel">
+        <div class="panel-head">
+          <h3>🧩 Blok Perintah</h3>
+          <span class="panel-sub">Klik blok untuk menambah ke antrean</span>
+        </div>
+
+        <div class="command-palette">
+          <button class="cmd-btn btn-step" data-cmd="forward">
+            <span class="cmd-icon">⬆️</span>
+            <span>Maju 1 Langkah</span>
+          </button>
+          <button class="cmd-btn btn-turn-l" data-cmd="left">
+            <span class="cmd-icon">↺</span>
+            <span>Putar Kiri 90°</span>
+          </button>
+          <button class="cmd-btn btn-turn-r" data-cmd="right">
+            <span class="cmd-icon">↻</span>
+            <span>Putar Kanan 90°</span>
+          </button>
+          <button class="cmd-btn btn-action" data-cmd="collect">
+            <span class="cmd-icon">⚡</span>
+            <span>Ambil Energi</span>
+          </button>
+          <button class="cmd-btn btn-action" data-cmd="switch">
+            <span class="cmd-icon">🔘</span>
+            <span>Tekan Saklar</span>
+          </button>
+          <button class="cmd-btn btn-loop" data-cmd="loop2">
+            <span class="cmd-icon">🔁</span>
+            <span>Ulangi 2x [Maju]</span>
+          </button>
+          <button class="cmd-btn btn-loop" data-cmd="loop3">
+            <span class="cmd-icon">🔁</span>
+            <span>Ulangi 3x [Maju]</span>
+          </button>
+        </div>
+
+        <div class="program-panel">
+          <div class="program-header">
+            <h4>📜 Program Robot (Algoritma)</h4>
+            <button id="btn-clear-code" class="btn-text-danger">🗑️ Hapus Semua</button>
+          </div>
+          <div class="code-queue" id="code-queue">
+            <div class="queue-empty">Belum ada blok instruksi. Klik tombol di atas untuk menyusun algoritma!</div>
+          </div>
+          <div class="speed-controls">
+            <span>Kecepatan Eksekusi:</span>
+            <input type="range" id="speed-slider" min="100" max="800" step="50" value="400" />
+            <span id="speed-label">Normal</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Grid World Canvas & Controls -->
+      <section class="world-panel">
+        <div class="world-hud">
+          <div class="level-selector-wrap">
+            <label for="level-select">Pilih Level:</label>
+            <select id="level-select">
+              <!-- Loaded by JS -->
+            </select>
+          </div>
+          <div class="mission-goal" id="mission-goal-text">
+            🎯 <strong>Misi:</strong> Arahkan robot ke Portal Hijau!
+          </div>
+        </div>
+
+        <div class="canvas-wrapper">
+          <canvas id="grid-canvas" width="480" height="480"></canvas>
+          <div class="grid-legend">
+            <span>🤖 CodeBot</span>
+            <span>⚡ Baterai Energi</span>
+            <span>🌀 Portal Tujuan</span>
+            <span>🔘 Saklar</span>
+            <span>🧱 Tembok</span>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="run-controls">
+          <button id="btn-run" class="btn-run">▶️ Jalankan Kode!</button>
+          <button id="btn-step" class="btn-step-run">⏯️ Langkah per Langkah</button>
+          <button id="btn-reset" class="btn-reset">🔄 Reset Robot</button>
+        </div>
+
+        <!-- Terminal / Console Output -->
+        <div class="terminal-box">
+          <div class="terminal-bar">
+            <span class="term-dot red"></span>
+            <span class="term-dot yellow"></span>
+            <span class="term-dot green"></span>
+            <span class="term-title">CodeBot Console & Sensor Log</span>
+          </div>
+          <div class="terminal-body" id="term-log">
+            [System] CodeBot v2.4 siap menerima instruksi pemrograman.
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Win / Next Level Modal -->
+  <div class="modal-overlay" id="level-modal">
+    <div class="modal-card">
+      <div class="modal-confetti">🎉 ⭐ 🏆</div>
+      <h2>Misi Berhasil Dituntaskan!</h2>
+      <p id="modal-level-msg">Algoritma kamu berhasil membawa CodeBot ke portal tujuan.</p>
+      <div class="modal-stars" id="modal-stars">⭐⭐⭐</div>
+      <div class="modal-btns">
+        <button class="btn-run" id="btn-next-level">Level Selanjutnya ➔</button>
+        <button class="btn-reset" id="btn-replay-level">Mainkan Ulang</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

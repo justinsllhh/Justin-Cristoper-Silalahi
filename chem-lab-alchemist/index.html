@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChemLab Alchemist - Game Reaksi Kimia & Molekul</title>
+  <meta name="description" content="Game edukasi kimia interaktif: bereksperimen menggabungkan elemen, membuat molekul, dan eksplorasi tabel periodik." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="main-header">
+      <div class="logo-area">
+        <div class="logo-icon">⚗️</div>
+        <div>
+          <h1>ChemLab <span class="accent-text">Alchemist</span></h1>
+          <p class="subtitle">Laboratorium Sintesis Elemen & Molekul Interaktif</p>
+        </div>
+      </div>
+      <div class="stats-bar">
+        <div class="stat-pill" title="Level Anda">
+          <span class="stat-label">Level</span>
+          <span class="stat-val" id="player-level">1 (Novis)</span>
+        </div>
+        <div class="stat-pill" title="Poin Penelitian">
+          <span class="stat-label">Poin Sains</span>
+          <span class="stat-val" id="player-points">0 XP</span>
+        </div>
+        <div class="stat-pill" title="Molekul Ditemukan">
+          <span class="stat-label">Molekul Ditemukan</span>
+          <span class="stat-val" id="discovered-count">0 / 18</span>
+        </div>
+        <button id="btn-sound-toggle" class="icon-btn" title="Toggle Suara">🔊</button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="nav-tab active" data-tab="lab">🧪 Meja Reaksi (Lab)</button>
+      <button class="nav-tab" data-tab="quests">🎯 Misi Molekul</button>
+      <button class="nav-tab" data-tab="ptable">🔬 Tabel Periodik</button>
+      <button class="nav-tab" data-tab="journal">📖 Jurnal Penemuan</button>
+    </nav>
+
+    <!-- Tab 1: Meja Reaksi Lab -->
+    <main class="tab-content active" id="tab-lab">
+      <div class="lab-layout">
+        <!-- Elements Shelf -->
+        <section class="shelf-panel">
+          <div class="panel-header">
+            <h3>🧫 Rak Unsur Kimia</h3>
+            <span class="hint-tag">Klik unsur untuk dimasukkan ke tabung</span>
+          </div>
+          <div class="elements-filter">
+            <button class="filter-btn active" data-category="all">Semua</button>
+            <button class="filter-btn" data-category="nonmetal">Non-Logam</button>
+            <button class="filter-btn" data-category="metal">Logam</button>
+            <button class="filter-btn" data-category="halogen">Halogen/Gas</button>
+          </div>
+          <div class="elements-grid" id="elements-shelf">
+            <!-- Rendered by JS -->
+          </div>
+        </section>
+
+        <!-- Reactor / Beaker Station -->
+        <section class="reactor-panel">
+          <div class="beaker-container">
+            <div class="glow-aurora"></div>
+            <canvas id="particle-canvas" width="360" height="320"></canvas>
+            
+            <div class="beaker-glass" id="beaker-zone">
+              <div class="liquid-layer" id="beaker-liquid"></div>
+              <div class="beaker-contents" id="beaker-elements">
+                <span class="empty-tip">Tabung masih kosong.<br>Pilih unsur dari rak di samping!</span>
+              </div>
+            </div>
+
+            <div class="beaker-measure-lines">
+              <span>300ml</span>
+              <span>200ml</span>
+              <span>100ml</span>
+            </div>
+          </div>
+
+          <!-- Controls -->
+          <div class="reactor-controls">
+            <div class="reaction-formula-preview" id="formula-preview">
+              Campuran: <span class="formula-text">Kosong</span>
+            </div>
+            <div class="btn-group">
+              <button id="btn-react" class="btn-primary">⚡ Mulai Reaksi!</button>
+              <button id="btn-clear" class="btn-secondary">🗑️ Bersihkan Tabung</button>
+              <button id="btn-hint" class="btn-hint">💡 Butuh Petunjuk?</button>
+            </div>
+          </div>
+
+          <!-- Reaction Log & Result Popup -->
+          <div class="reaction-status-box" id="reaction-result-box">
+            <div class="status-indicator ready"></div>
+            <div class="status-text" id="status-message">Siap melakukan eksperimen kimia.</div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Tab 2: Quests / Level Challenge -->
+    <section class="tab-content" id="tab-quests">
+      <div class="quests-container">
+        <div class="section-title-wrap">
+          <h2>🎯 Misi Penelitian Kimia</h2>
+          <p>Selesaikan sintesis molekul target untuk membuka level laboratorium baru!</p>
+        </div>
+        <div class="quest-grid" id="quest-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Periodic Table Explorer -->
+    <section class="tab-content" id="tab-ptable">
+      <div class="ptable-container">
+        <div class="section-title-wrap">
+          <h2>🔬 Eksplorasi Tabel Periodik</h2>
+          <p>Pelajari karakteristik nomor atom, massa, wujud, dan fungsi setiap unsur di alam.</p>
+        </div>
+        <div class="ptable-layout">
+          <div class="ptable-grid" id="ptable-grid"></div>
+          <div class="element-detail-card" id="element-detail-card">
+            <div class="card-prompt">Klik salah satu unsur di tabel untuk melihat profil lengkapnya.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 4: Journal / Discovery Collection -->
+    <section class="tab-content" id="tab-journal">
+      <div class="journal-container">
+        <div class="section-title-wrap">
+          <h2>📖 Ensiklopedia Molekul & Reaksi</h2>
+          <p>Daftar senyawa kimia dan reaksi yang berhasil kamu sintesis di laboratorium.</p>
+        </div>
+        <div class="journal-grid" id="journal-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Modal / Toast -->
+  <div class="modal-overlay" id="discovery-modal">
+    <div class="modal-card">
+      <div class="modal-sparkles">✨ 🎉 ✨</div>
+      <h2 id="modal-title">Senyawa Baru Berhasil Diciptakan!</h2>
+      <div class="molecule-badge" id="modal-formula">H₂O</div>
+      <h3 id="modal-name">Air (Dihidrogen Monoksida)</h3>
+      <p id="modal-desc">Pelarut universal esensial bagi seluruh kehidupan di bumi.</p>
+      <div class="modal-reward">+50 Poin Sains XP</div>
+      <button class="btn-primary" id="btn-modal-close">Keren! Simpan ke Jurnal</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

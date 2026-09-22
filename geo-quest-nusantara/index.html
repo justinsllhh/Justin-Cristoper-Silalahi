@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeoQuest Nusantara - Petualangan Peta & Budaya Indonesia</title>
+  <meta name="description" content="Game edukasi geografi dan budaya nusantara: jelajahi pulau, tebak provinsi, kenali rumah adat, dan jadilah Penjelajah Nusantara!" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <div class="brand-badge">🇮🇩</div>
+        <div>
+          <h1>GeoQuest <span class="gold-gradient">Nusantara</span></h1>
+          <p class="tagline">Petualangan Geografi, Budaya & Keanekaragaman Indonesia</p>
+        </div>
+      </div>
+      <div class="user-stats">
+        <div class="stat-box">
+          <span class="lbl">Gelar Penjelajah</span>
+          <span class="val" id="user-rank">Pelaut Pemula</span>
+        </div>
+        <div class="stat-box">
+          <span class="lbl">Total Skor</span>
+          <span class="val" id="user-score">0 Poin</span>
+        </div>
+        <div class="stat-box">
+          <span class="lbl">Lencana</span>
+          <span class="val" id="user-badge-count">0 / 6</span>
+        </div>
+        <button id="btn-sound" class="btn-icon" title="Suara">🔊</button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-bar">
+      <button class="nav-btn active" data-tab="map-game">🗺️ Ekspedisi Peta</button>
+      <button class="nav-btn" data-tab="culture-quiz">🎭 Kuis Budaya & Tradisi</button>
+      <button class="nav-btn" data-tab="encyclopedia">📚 Ensiklopedia Wilayah</button>
+      <button class="nav-btn" data-tab="badges">🎖️ Ruang Penghargaan</button>
+    </nav>
+
+    <!-- TAB 1: Peta & Ekspedisi Game -->
+    <section class="tab-pane active" id="tab-map-game">
+      <div class="game-dashboard">
+        <div class="game-hud">
+          <div class="hud-item">
+            <span class="hud-label">Pertanyaan</span>
+            <span class="hud-val" id="q-counter">1 / 10</span>
+          </div>
+          <div class="hud-item timer-item">
+            <span class="hud-label">Sisa Waktu</span>
+            <span class="hud-val" id="timer-display">15s</span>
+          </div>
+          <div class="hud-item">
+            <span class="hud-label">Streak Combo</span>
+            <span class="hud-val highlight" id="combo-display">x1 🔥</span>
+          </div>
+        </div>
+
+        <div class="mission-box">
+          <span class="mission-flag">MISI:</span>
+          <h2 id="mission-question">Dimanakah letak wilayah Kepulauan Maluku?</h2>
+          <p class="mission-hint" id="mission-hint">Petunjuk: Wilayah kepulauan di timur Sulawesi yang terkenal dengan rempah pala & cengkeh.</p>
+        </div>
+
+        <!-- Interactive SVG Map -->
+        <div class="map-wrapper">
+          <div class="map-tip">Klik pada pulau atau zona wilayah di peta di bawah ini:</div>
+          <svg id="indonesia-map" viewBox="0 0 1000 450" class="nusantara-svg">
+            <defs>
+              <linearGradient id="oceanGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#0e2338"/>
+                <stop offset="100%" stop-color="#0a192f"/>
+              </linearGradient>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+              </filter>
+            </defs>
+
+            <!-- Ocean Background -->
+            <rect width="1000" height="450" rx="16" fill="url(#oceanGrad)" />
+
+            <!-- Sumatera (Island 1) -->
+            <path id="region-sumatera" class="map-island" data-region="sumatera" data-name="Sumatera"
+              d="M120,70 L210,180 L260,250 L230,280 L200,260 L140,180 L80,100 Z" />
+            <text x="135" y="160" class="island-label">SUMATERA</text>
+
+            <!-- Jawa (Island 2) -->
+            <path id="region-jawa" class="map-island" data-region="jawa" data-name="Jawa"
+              d="M240,310 L440,315 L430,340 L235,335 Z" />
+            <text x="320" y="332" class="island-label">JAWA</text>
+
+            <!-- Kalimantan (Island 3) -->
+            <path id="region-kalimantan" class="map-island" data-region="kalimantan" data-name="Kalimantan"
+              d="M330,130 L460,110 L500,200 L440,260 L350,240 L310,180 Z" />
+            <text x="375" y="190" class="island-label">KALIMANTAN</text>
+
+            <!-- Sulawesi (Island 4) -->
+            <path id="region-sulawesi" class="map-island" data-region="sulawesi" data-name="Sulawesi"
+              d="M520,130 L570,120 L585,150 L550,170 L580,220 L560,260 L535,240 L535,175 L505,155 Z" />
+            <text x="545" y="195" class="island-label">SULAWESI</text>
+
+            <!-- Bali & Nusa Tenggara (Island 5) -->
+            <path id="region-nusatenggara" class="map-island" data-region="nusatenggara" data-name="Bali & Nusa Tenggara"
+              d="M450,335 L500,340 L560,345 L620,340 L600,358 L460,350 Z" />
+            <text x="510" y="358" class="island-label">BALI & NT</text>
+
+            <!-- Maluku (Island 6) -->
+            <path id="region-maluku" class="map-island" data-region="maluku" data-name="Kepulauan Maluku"
+              d="M650,150 L710,140 L700,220 L660,260 L620,220 Z" />
+            <text x="645" y="200" class="island-label">MALUKU</text>
+
+            <!-- Papua (Island 7) -->
+            <path id="region-papua" class="map-island" data-region="papua" data-name="Papua"
+              d="M740,160 L800,140 L930,170 L910,310 L840,300 L790,240 L730,210 Z" />
+            <text x="815" y="235" class="island-label">PAPUA</text>
+          </svg>
+        </div>
+
+        <div class="feedback-banner" id="map-feedback">
+          Pilih salah satu pulau di peta untuk menjawab tantangan!
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: Kuis Budaya & Tradisi -->
+    <section class="tab-pane" id="tab-culture-quiz">
+      <div class="culture-wrap">
+        <div class="culture-header">
+          <h2>🎭 Kuis Warisan Budaya Nusantara</h2>
+          <p>Uji wawasanmu tentang rumah adat, senjata tradisional, tarian daerah, dan kearifan lokal.</p>
+        </div>
+
+        <div class="quiz-card" id="culture-quiz-card">
+          <div class="quiz-badge" id="cq-category">Kategori: Rumah Adat</div>
+          <h3 class="quiz-prompt" id="cq-question">Rumah adat 'Tongkonan' dengan atap melengkung menyerupai perahu berasal dari suku dan daerah mana?</h3>
+          <div class="options-grid" id="cq-options">
+            <!-- Buttons dynamically generated -->
+          </div>
+          <div class="quiz-info-box" id="cq-explanation"></div>
+          <button class="btn-gold" id="btn-cq-next" style="display: none; margin-top: 15px;">Lanjut ke Pertanyaan Berikutnya ➔</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: Ensiklopedia Wilayah -->
+    <section class="tab-pane" id="tab-encyclopedia">
+      <div class="encyclopedia-wrap">
+        <div class="culture-header">
+          <h2>📚 Jelajah 7 Kepulauan Utama Indonesia</h2>
+          <p>Pilih wilayah kepulauan untuk meninjau informasi fauna endemik, kekayaan alam, dan landmark ikonik.</p>
+        </div>
+        <div class="region-chips" id="enc-chips">
+          <!-- Island filter chips -->
+        </div>
+        <div class="enc-card" id="enc-details">
+          <!-- Loaded by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: Lencana & Prestasi -->
+    <section class="tab-pane" id="tab-badges">
+      <div class="badges-wrap">
+        <div class="culture-header">
+          <h2>🎖️ Ruang Penghargaan Penjelajah</h2>
+          <p>Kumpulkan seluruh medali penghargaan dengan menuntaskan berbagai petualangan di nusantara.</p>
+        </div>
+        <div class="badges-grid" id="badges-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

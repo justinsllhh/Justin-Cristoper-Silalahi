@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RumusPintar - Kalkulator & Ensiklopedia Rumus Interaktif</title>
+  <meta name="description" content="Kalkulator rumus matematika dan fisika interaktif lengkap dengan langkah penyelesaian step-by-step, visualisasi canvas, dan konversi satuan." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <div class="brand-icon">📐</div>
+        <div>
+          <h1>Rumus<span class="gradient-text">Pintar</span></h1>
+          <p class="subtitle">Kalkulator Sains, Pemecah Rumus Step-by-Step & Visualisator</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <div class="search-wrap">
+          <input type="text" id="formula-search" placeholder="🔍 Cari rumus (misal: Pythagoras, GLBB, Tabung)..." />
+        </div>
+      </div>
+    </header>
+
+    <!-- Nav Tabs -->
+    <nav class="nav-bar">
+      <button class="nav-btn active" data-tab="solver">🧮 Pemecah Rumus (Solver)</button>
+      <button class="nav-btn" data-tab="converter">🔄 Konverter Satuan</button>
+      <button class="nav-btn" data-tab="cheatsheet">📑 Contekan Rumus Tersimpan</button>
+    </nav>
+
+    <!-- TAB 1: Formula Solver -->
+    <section class="tab-pane active" id="tab-solver">
+      <div class="solver-layout">
+        <!-- Formula Catalog Sidebar -->
+        <aside class="catalog-sidebar">
+          <div class="cat-filter-pills">
+            <button class="cat-pill active" data-cat="all">Semua</button>
+            <button class="cat-pill" data-cat="math">Matematika</button>
+            <button class="cat-pill" data-cat="physics">Fisika</button>
+          </div>
+          <div class="formula-list" id="formula-list">
+            <!-- Loaded by JS -->
+          </div>
+        </aside>
+
+        <!-- Solver & Canvas Workspace -->
+        <main class="solver-workspace">
+          <div class="solver-header" id="solver-header">
+            <div>
+              <span class="subject-badge" id="formula-category">Matematika - Geometri</span>
+              <h2 id="formula-name">Luas & Keliling Lingkaran</h2>
+              <p class="formula-formula" id="formula-display">L = π × r², K = 2 × π × r</p>
+            </div>
+            <button class="btn-bookmark" id="btn-bookmark-formula">⭐ Simpan ke Contekan</button>
+          </div>
+
+          <div class="solver-body">
+            <!-- Inputs Column -->
+            <div class="inputs-column">
+              <h3>🔢 Masukkan Nilai Variabel</h3>
+              <form id="formula-inputs-form" class="inputs-form">
+                <!-- Inputs generated dynamically -->
+              </form>
+              <button class="btn-calculate" id="btn-calculate">⚡ Hitung Langkah Demi Langkah</button>
+            </div>
+
+            <!-- Visual Canvas Column -->
+            <div class="visual-column">
+              <h3>🎨 Visualisasi Bentuk / Diagram</h3>
+              <div class="canvas-box">
+                <canvas id="visual-canvas" width="280" height="220"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step by Step Calculation Result Box -->
+          <div class="step-solution-box" id="solution-box">
+            <h3>📝 Langkah Penyelesaian (Step-by-Step):</h3>
+            <div class="solution-content" id="solution-content">
+              Masukkan variabel di atas lalu klik <strong>Hitung Langkah Demi Langkah</strong> untuk melihat penjabaran matematis.
+            </div>
+          </div>
+        </main>
+      </div>
+    </section>
+
+    <!-- TAB 2: Unit Converter -->
+    <section class="tab-pane" id="tab-converter">
+      <div class="converter-wrapper">
+        <div class="converter-header">
+          <h2>🔄 Alat Konversi Satuan Pelajar</h2>
+          <p>Konversi instan satuan panjang, massa, suhu, kecepatan, dan kapasitas data.</p>
+        </div>
+
+        <div class="conv-type-tabs">
+          <button class="conv-tab active" data-type="length">Panjang (m, km, cm, mil)</button>
+          <button class="conv-tab" data-type="mass">Massa (kg, gram, ton, pon)</button>
+          <button class="conv-tab" data-type="temp">Suhu (°C, °F, K, °R)</button>
+          <button class="conv-tab" data-type="speed">Kecepatan (km/h, m/s, knot)</button>
+          <button class="conv-tab" data-type="data">Data Digital (Byte, KB, MB, GB)</button>
+        </div>
+
+        <div class="converter-card">
+          <div class="converter-grid">
+            <div class="conv-box">
+              <label for="conv-from-val">Nilai Asal:</label>
+              <input type="number" id="conv-from-val" value="10" />
+              <select id="conv-from-unit"></select>
+            </div>
+            <div class="conv-arrow">➔</div>
+            <div class="conv-box">
+              <label for="conv-to-val">Hasil Konversi:</label>
+              <input type="number" id="conv-to-val" readonly />
+              <select id="conv-to-unit"></select>
+            </div>
+          </div>
+          <div class="conv-formula-info" id="conv-info-text">10 Kilometer = 10,000 Meter</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: Saved Cheat Sheet -->
+    <section class="tab-pane" id="tab-cheatsheet">
+      <div class="cheatsheet-wrapper">
+        <div class="cheatsheet-header">
+          <div>
+            <h2>📑 Contekan & Ringkasan Rumus Tersimpan</h2>
+            <p>Daftar rumus yang kamu tandai sebagai referensi cepat belajar dan persiapan ujian.</p>
+          </div>
+          <button class="btn-print" id="btn-print-sheet">🖨️ Cetak / Print PDF</button>
+        </div>
+        <div class="cheatsheet-grid" id="cheatsheet-grid">
+          <!-- Loaded by JS -->
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
