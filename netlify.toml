@@ -1,0 +1,9 @@
+# Netlify Configuration for Static Game Multi-Portal
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
