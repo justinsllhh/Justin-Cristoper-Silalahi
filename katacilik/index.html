@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KataCilik - Petualangan Kata Ajaib Edukasi Anak</title>
+    <meta name="description" content="Game edukasi interaktif anak usia 6-10 tahun untuk belajar membaca, menyusun huruf, merangkai suku kata, dan memecahkan teka-teki kata seru!">
+    <meta name="theme-color" content="#38BDF8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-viewport">
+        <!-- Floating Animated Background Clouds -->
+        <div class="cloud-bg">
+            <div class="cloud cloud-1"></div>
+            <div class="cloud cloud-2"></div>
+            <div class="cloud cloud-3"></div>
+        </div>
+
+        <!-- App Header & Global HUD -->
+        <header class="app-header">
+            <div class="header-left">
+                <button class="icon-btn" id="btn-header-home" title="Kembali ke Beranda">🏠</button>
+                <div class="brand-badge">
+                    <span class="brand-logo-icon">🦊</span>
+                    <span class="brand-title">Kata<span>Cilik</span></span>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="stats-pill" title="Total Bintang Kamu">
+                    <span class="star-icon">⭐</span>
+                    <span id="hud-total-stars">0</span>
+                </div>
+                <button class="stats-pill" id="btn-header-album" style="cursor: pointer;" title="Buka Album Stiker">
+                    <span class="sticker-icon">📖</span>
+                    <span id="hud-sticker-count">0</span>
+                </button>
+                <button class="icon-btn active-glow" id="btn-toggle-sound" title="Efek Suara">🔊</button>
+                <button class="icon-btn active-glow" id="btn-toggle-music" title="Musik Latar">🎵</button>
+            </div>
+        </header>
+
+        <!-- Main Screen Area -->
+        <main class="screen-area">
+            
+            <!-- 1. HOME SCREEN -->
+            <section class="screen active" id="screen-home">
+                <div class="home-container">
+                    <div class="hero-mascot-wrapper">
+                        <div class="mascot-avatar">🦊</div>
+                        <div class="mascot-speech-bubble">Halo Sahabat Cilik! Yuk main kata! ✨</div>
+                    </div>
+
+                    <h1 class="home-title">Petualangan <span>Kata Ajaib</span></h1>
+                    <p class="home-subtitle">Pilih permainan seru dan kumpulkan stiker hebatmu!</p>
+
+                    <!-- 4 Educational Modes Grid -->
+                    <div class="modes-grid">
+                        <div class="mode-card card-pink" data-mode="spelling" id="btn-mode-spelling">
+                            <div class="mode-icon-box">🔤</div>
+                            <div class="mode-info">
+                                <h3>Susun Huruf</h3>
+                                <p>Rangkai huruf jadi kata utuh</p>
+                            </div>
+                        </div>
+
+                        <div class="mode-card card-purple" data-mode="syllable" id="btn-mode-syllable">
+                            <div class="mode-icon-box">🧩</div>
+                            <div class="mode-info">
+                                <h3>Sambung Suku Kata</h3>
+                                <p>Gabung suku kata yang tepat</p>
+                            </div>
+                        </div>
+
+                        <div class="mode-card card-blue" data-mode="quiz" id="btn-mode-quiz">
+                            <div class="mode-icon-box">🎯</div>
+                            <div class="mode-info">
+                                <h3>Tebak Gambar</h3>
+                                <p>Pilih nama benda yang benar</p>
+                            </div>
+                        </div>
+
+                        <div class="mode-card card-green" data-mode="riddle" id="btn-mode-riddle">
+                            <div class="mode-icon-box">🔍</div>
+                            <div class="mode-info">
+                                <h3>Detektif Kata</h3>
+                                <p>Pecahkan teka-teki misteri</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="home-bottom-actions">
+                        <button class="btn-primary-fun" onclick="document.getElementById('btn-mode-spelling').click();">
+                            🚀 Mulai Petualangan!
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. WORLD SELECTOR SCREEN -->
+            <section class="screen" id="screen-world-select">
+                <div class="world-select-header">
+                    <h2>🗺️ Pilih Dunia Petualangan</h2>
+                    <p style="color: #64748B; font-weight: 600;">Jelajahi setiap tempat untuk menemukan kosakata baru!</p>
+                </div>
+                <div class="worlds-grid" id="worlds-grid">
+                    <!-- Injected dynamically by game.js -->
+                </div>
+            </section>
+
+            <!-- 3. GAMEPLAY SCREEN -->
+            <section class="screen" id="screen-gameplay">
+                <div class="gameplay-header">
+                    <span class="level-tag" id="game-mode-title">✨ Susun Huruf Kata</span>
+                    <div class="game-progress-bar">
+                        <div class="game-progress-fill" id="game-progress-fill"></div>
+                    </div>
+                    <span class="level-tag" id="game-step-indicator" style="background: #FEF3C7; color: #D97706;">1/5</span>
+                </div>
+
+                <!-- Dynamic Game Board -->
+                <div class="game-board-card" id="game-board">
+                    <!-- Dynamic question content injected by game.js -->
+                </div>
+
+                <!-- Instant Response / Mascot Feedback Banner -->
+                <div class="feedback-banner" id="feedback-banner"></div>
+            </section>
+        </main>
+
+        <!-- WIN & REWARD MODAL -->
+        <div class="modal-overlay" id="modal-win">
+            <div class="modal-card">
+                <div style="font-size: 3.5rem;">🎉</div>
+                <h2 class="modal-title">Luar Biasa Cerdas!</h2>
+                <p style="color: #64748B; font-weight: 700;">Kamu berhasil menyelesaikan tantangan ini!</p>
+
+                <div class="modal-stars-row">
+                    <span class="modal-star" id="win-star-1">⭐</span>
+                    <span class="modal-star" id="win-star-2">⭐</span>
+                    <span class="modal-star" id="win-star-3">⭐</span>
+                </div>
+
+                <!-- Unlocked Sticker Showcase -->
+                <div class="sticker-unlock-showcase" id="modal-sticker-showcase" style="display: none;"></div>
+
+                <div style="margin-top: 20px;">
+                    <button class="btn-primary-fun" id="btn-next-level" style="margin: 0 auto;">
+                        Lanjut Soal Berikutnya ➡️
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STICKER ALBUM MODAL -->
+        <div class="modal-overlay" id="modal-album">
+            <div class="modal-card" style="max-width: 600px;">
+                <h2 class="modal-title">📖 Album Koleksi Stiker</h2>
+                <p style="color: #64748B; font-weight: 600; margin-bottom: 14px;">Klik stiker yang sudah terbuka untuk mendengar fakta serunya!</p>
+                
+                <div class="sticker-album-grid" id="album-grid">
+                    <!-- Injected by game.js -->
+                </div>
+
+                <div style="margin-top: 18px;">
+                    <button class="btn-secondary-fun" id="btn-close-album" style="margin: 0 auto;">
+                        Tutup Album
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canvas for Silky Confetti Particles -->
+        <canvas id="confetti-canvas"></canvas>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/audio.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>

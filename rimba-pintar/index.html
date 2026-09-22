@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Petualangan Rimba Pintar - Game Edukasi Interaktif Ceria untuk Anak-Anak. Belajar Sains, Logika Coding, Peduli Lingkungan & Memori!">
+  <title>Petualangan Rimba Pintar - Game Edukasi Anak</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Floating Background Elements -->
+  <div class="bg-decorations">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+  </div>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <div id="app">
+    <!-- Main App Header -->
+    <header class="app-header">
+      <div class="logo-container" onclick="window.appState.switchScreen('hub')">
+        <span class="logo-icon">🌴</span>
+        <div class="logo-text">
+          <h1>Rimba Pintar</h1>
+          <p>Dunia Belajar & Petualangan Anak Cerdas</p>
+        </div>
+      </div>
+
+      <div class="header-stats">
+        <div class="stat-badge star-badge" title="Total Bintang Kamu">
+          <span>⭐</span>
+          <span id="header-stars-count">0</span>
+        </div>
+        <div class="stat-badge coin-badge" title="Koin Petualang">
+          <span>🪙</span>
+          <span id="header-coins-count">0</span>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <button class="icon-btn" id="sound-toggle-btn" title="Aktifkan/Matikan Suara">🔊</button>
+        <button class="icon-btn" id="speech-toggle-btn" title="Aktifkan/Matikan Narasi">🗣️</button>
+      </div>
+    </header>
+
+    <!-- ============================================== -->
+    <!-- SCREEN 1: GAME HUB (BERANDA) -->
+    <!-- ============================================== -->
+    <main class="screen active" id="screen-hub">
+      <!-- Hero Banner -->
+      <section class="hero-banner">
+        <div class="hero-content">
+          <span class="hero-tag">🌟 Petualangan Hari Ini</span>
+          <h2 class="hero-title">Selamat Datang di Rimba Pengetahuan!</h2>
+          <p class="hero-desc">Yuk jelajahi tantangan sains, asah logika coding, lestarikan alam, dan latih ketangkasan otakmu!</p>
+          <div class="hero-avatar-spotlight" id="hero-avatar-box" title="Klik untuk ganti karakter avatar">
+            <div class="player-avatar-large" id="hero-player-avatar">🦌</div>
+            <div class="player-info-hero">
+              <h3 id="hero-player-name">Kiki si Kancil Pintar</h3>
+              <p>Klik di sini untuk ganti avatar 🔄</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Games Grid Section -->
+      <div class="section-title-wrap">
+        <h2 class="section-title">
+          <span>🎮</span> Pilih Petualangan Edukasi
+        </h2>
+      </div>
+
+      <div class="games-grid">
+        <!-- Game 1: Eco Sorter -->
+        <div class="game-card card-eco" onclick="window.appState.launchGame('eco')">
+          <div class="game-card-icon">🌿</div>
+          <h3 class="game-card-title">Eco-Sorter: Pilah Sampah</h3>
+          <p class="game-card-desc">Belajar memilah sampah organik, plastik, kertas & B3 untuk menjaga hutan tetap hijau dan asri!</p>
+          <div class="game-card-footer">
+            <span class="game-difficulty">⭐ Mudah</span>
+            <span class="play-badge-btn">Mainkan ➜</span>
+          </div>
+        </div>
+
+        <!-- Game 2: Science Quest -->
+        <div class="game-card card-science" onclick="window.appState.launchGame('science')">
+          <div class="game-card-icon">🔭</div>
+          <h3 class="game-card-title">Sains & Luar Angkasa</h3>
+          <p class="game-card-desc">Jelajahi rahasia planet tata surya, keajaiban tubuh manusia, dan habitat flora & fauna.</p>
+          <div class="game-card-footer">
+            <span class="game-difficulty">⭐⭐ Seru</span>
+            <span class="play-badge-btn">Mainkan ➜</span>
+          </div>
+        </div>
+
+        <!-- Game 3: Logic Maze -->
+        <div class="game-card card-logic" onclick="window.appState.launchGame('logic')">
+          <div class="game-card-icon">🧩</div>
+          <h3 class="game-card-title">Labirin Logika (Coding Cilik)</h3>
+          <p class="game-card-desc">Susun blok algoritma arah untuk memandu jagoanmu melewati labirin batu dan mengambil harta karun!</p>
+          <div class="game-card-footer">
+            <span class="game-difficulty">⭐⭐⭐ Asah Otak</span>
+            <span class="play-badge-btn">Mainkan ➜</span>
+          </div>
+        </div>
+
+        <!-- Game 4: Memory Match -->
+        <div class="game-card card-memory" onclick="window.appState.launchGame('memory')">
+          <div class="game-card-icon">🧠</div>
+          <h3 class="game-card-title">Memory Match: Otak Cemerlang</h3>
+          <p class="game-card-desc">Temukan pasangan kartu bergambar yang cocok dan latih daya konsentrasi serta memorimu!</p>
+          <div class="game-card-footer">
+            <span class="game-difficulty">⭐⭐ Fokus</span>
+            <span class="play-badge-btn">Mainkan ➜</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hub Secondary Info -->
+      <div class="hub-secondary-grid">
+        <div class="hub-widget">
+          <h3 class="widget-title"><span>🏆</span> Lencana Prestasi Penjelajah</h3>
+          <div class="badges-row" id="badges-row-container">
+            <!-- Dynamically injected -->
+          </div>
+        </div>
+
+        <div class="hub-widget" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);">
+          <h3 class="widget-title" style="color: #92400e;"><span>💡</span> Kata Motivasi Cilik</h3>
+          <p style="font-size: 0.95rem; color: #78350f; font-weight: 600; line-height: 1.4;">
+            "Setiap anak pintar lahir dari rasa ingin tahu yang besar. Teruslah mencoba dan belajar hal baru setiap hari!" 🚀
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <!-- ============================================== -->
+    <!-- SCREEN 2: ECO-SORTER GAME VIEW -->
+    <!-- ============================================== -->
+    <section class="screen" id="screen-eco">
+      <div class="game-play-view">
+        <div class="game-top-bar">
+          <button class="back-to-hub-btn" onclick="window.appState.switchScreen('hub')">
+            <span>⬅️</span> Beranda
+          </button>
+          <div class="game-title-header">
+            <span>🌿</span> Eco-Sorter: Pilah Sampah Cerdas
+          </div>
+          <div class="game-hud-scores">
+            <div class="hud-pill">Ronde: <span id="eco-round-val" style="color: #059669; margin-left: 4px;">1/8</span></div>
+            <div class="hud-pill">Skor: <span id="eco-score-val" style="color: #d97706; margin-left: 4px;">0</span></div>
+          </div>
+        </div>
+
+        <div id="eco-game-content"></div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- SCREEN 3: SCIENCE QUEST GAME VIEW -->
+    <!-- ============================================== -->
+    <section class="screen" id="screen-science">
+      <div class="game-play-view">
+        <div class="game-top-bar">
+          <button class="back-to-hub-btn" onclick="window.appState.switchScreen('hub')">
+            <span>⬅️</span> Beranda
+          </button>
+          <div class="game-title-header">
+            <span>🔭</span> Sains & Luar Angkasa
+          </div>
+          <div class="game-hud-scores">
+            <div class="hud-pill">Soal: <span id="science-round-val" style="color: #2563eb; margin-left: 4px;">1/6</span></div>
+            <div class="hud-pill">Skor: <span id="science-score-val" style="color: #d97706; margin-left: 4px;">0</span></div>
+          </div>
+        </div>
+
+        <div id="science-game-content"></div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- SCREEN 4: LOGIC MAZE GAME VIEW -->
+    <!-- ============================================== -->
+    <section class="screen" id="screen-logic">
+      <div class="game-play-view">
+        <div class="game-top-bar">
+          <button class="back-to-hub-btn" onclick="window.appState.switchScreen('hub')">
+            <span>⬅️</span> Beranda
+          </button>
+          <div class="game-title-header">
+            <span>🧩</span> Labirin Logika & Coding Cilik
+          </div>
+          <div class="game-hud-scores">
+            <div class="hud-pill">Level: <span id="logic-round-val" style="color: #d97706; margin-left: 4px;">1/3</span></div>
+            <div class="hud-pill">Poin: <span id="logic-score-val" style="color: #059669; margin-left: 4px;">0</span></div>
+          </div>
+        </div>
+
+        <div id="logic-game-content"></div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- SCREEN 5: MEMORY CARDS GAME VIEW -->
+    <!-- ============================================== -->
+    <section class="screen" id="screen-memory">
+      <div class="game-play-view">
+        <div class="game-top-bar">
+          <button class="back-to-hub-btn" onclick="window.appState.switchScreen('hub')">
+            <span>⬅️</span> Beranda
+          </button>
+          <div class="game-title-header">
+            <span>🧠</span> Memory Match: Otak Cemerlang
+          </div>
+          <div class="game-hud-scores">
+            <div class="hud-pill">Cocok: <span id="memory-round-val" style="color: #7c3aed; margin-left: 4px;">0/6</span></div>
+            <div class="hud-pill">Langkah: <span id="memory-score-val" style="color: #d97706; margin-left: 4px;">0</span></div>
+          </div>
+        </div>
+
+        <div id="memory-game-content"></div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: CELEBRATION & VICTORY -->
+  <!-- ============================================== -->
+  <div class="modal-overlay" id="celebration-modal">
+    <div class="modal-card">
+      <div class="modal-celebrate-icon">🏆</div>
+      <h2 class="modal-title" id="modal-title-text">Luar Biasa!</h2>
+      <p class="modal-desc" id="modal-desc-text">Kamu telah menyelesaikan tantangan dengan sangat hebat!</p>
+      
+      <div>
+        <div class="modal-stars-gained" id="modal-stars-value">+5 ⭐ Bintang</div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-primary" id="modal-replay-btn">Main Lagi 🔄</button>
+        <button class="btn-secondary" id="modal-home-btn">Ke Beranda 🏠</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: AVATAR SELECTOR -->
+  <!-- ============================================== -->
+  <div class="modal-overlay" id="avatar-modal">
+    <div class="modal-card">
+      <h2 class="modal-title">Pilih Sahabat Petualangmu</h2>
+      <p class="modal-desc">Pilih karakter hewan yang ingin kamu gunakan saat menjelajah:</p>
+      
+      <div class="avatar-grid" id="avatar-modal-grid"></div>
+
+      <button class="btn-secondary" id="close-avatar-modal-btn">Tutup</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/speech.js"></script>
+  <script src="js/games/ecoSorter.js"></script>
+  <script src="js/games/scienceQuest.js"></script>
+  <script src="js/games/logicMaze.js"></script>
+  <script src="js/games/memoryCards.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

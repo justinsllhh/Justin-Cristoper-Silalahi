@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ksatria Karakter - Petualangan Pahlawan Kebaikan & Budi Pekerti</title>
+    <meta name="description" content="Game edukasi interaktif anak untuk menumbuhkan budi pekerti luhur, kejujuran, empati, gotong royong, disiplin, sopan santun 5S, dan sikap anti-bullying.">
+    <meta name="theme-color" content="#4F46E5">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Floating Ambient Background -->
+    <div class="bg-decorations">
+        <div class="decor-blob blob-1"></div>
+        <div class="decor-blob blob-2"></div>
+        <div class="decor-blob blob-3"></div>
+    </div>
+
+    <div class="app-viewport">
+        <!-- ==========================================
+             GLOBAL APP HEADER & HUD
+             ========================================== -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="brand-badge" id="btn-header-home" title="Kembali ke Beranda">
+                    <span class="brand-logo-icon">🌟</span>
+                    <span class="brand-title">Ksatria<span>Karakter</span></span>
+                </div>
+
+                <div class="player-profile-pill" title="Profil Pemain">
+                    <span class="player-icon">🛡️</span>
+                    <span id="hud-player-name">Sahabat Cilik</span>
+                    <button class="btn-mini-edit" id="btn-edit-name" title="Ganti Nama">✏️</button>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="hud-pill gold" title="Total Bintang Kebaikan">
+                    <span>⭐</span>
+                    <span id="hud-total-stars">0</span>
+                </div>
+
+                <div class="hud-pill green" title="Poin Kebajikan">
+                    <span>✨</span>
+                    <span id="hud-total-points">0</span>
+                </div>
+
+                <button class="hud-icon-btn" id="btn-header-tree" title="Pohon Kebaikan Ajaib">
+                    🌳
+                </button>
+
+                <button class="hud-icon-btn" id="btn-header-badges" title="Koleksi Medali & Piagam">
+                    🎖️
+                </button>
+
+                <button class="hud-icon-btn active-glow" id="btn-toggle-speech" title="Narasi Suara">
+                    🗣️
+                </button>
+
+                <button class="hud-icon-btn active-glow" id="btn-toggle-sound" title="Efek Suara">
+                    🔊
+                </button>
+
+                <button class="hud-icon-btn" id="btn-toggle-music" title="Musik Santai">
+                    🎵
+                </button>
+            </div>
+        </header>
+
+        <!-- ==========================================
+             MAIN SCREENS CONTAINER
+             ========================================== -->
+        <main class="screen-area">
+            
+            <!-- ----------------------------------------
+                 1. HOME SCREEN
+                 ---------------------------------------- -->
+            <section class="screen active" id="screen-home">
+                <!-- Hero Banner -->
+                <div class="hero-banner">
+                    <div class="hero-text">
+                        <span class="hero-level-tag" id="hud-level-badge">Ksatria Pemula</span>
+                        <h1 class="hero-title">Petualangan <span>Pahlawan Kebaikan</span></h1>
+                        <p class="hero-subtitle">Jadilah anak hebat berakhlak mulia: jujur, peduli, disiplin, dan penuh kasih sayang!</p>
+                        <button class="btn-action-primary" onclick="window.gameApp.startStoryMode(0)">
+                            🚀 Mulai Petualangan Cerita
+                        </button>
+                    </div>
+
+                    <div class="hero-mascot-visual">
+                        <div class="mascot-huge">🦸‍♂️✨</div>
+                        <div class="mascot-speech-bubble">Halo Ksatria! Tebarkan kebaikan hari ini!</div>
+                    </div>
+                </div>
+
+                <!-- Quick Shortcuts -->
+                <div class="quick-feature-row">
+                    <div class="feature-banner-card tree-shortcut" onclick="window.gameApp.showScreen('tree')">
+                        <div class="feat-icon-box">🌳</div>
+                        <div class="feat-info">
+                            <h3>Pohon Kebaikan Ajaib</h3>
+                            <p>Lihat pohonmu berdaun, berbunga & berbuah emas!</p>
+                        </div>
+                    </div>
+
+                    <div class="feature-banner-card cert-shortcut" onclick="window.gameApp.showScreen('badges')">
+                        <div class="feat-icon-box">📜</div>
+                        <div class="feat-info">
+                            <h3>Ruang Medali & Piagam</h3>
+                            <p>Kumpulkan 8 medali dan cetak sertifikatmu!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 Game Modes Grid -->
+                <h2 class="section-heading">🎮 Pilih Arena Petualanganmu</h2>
+                <div class="modes-grid">
+                    <!-- Mode 1: Cerita -->
+                    <div class="mode-card card-story" id="btn-mode-story">
+                        <div class="mode-icon-box">🎭</div>
+                        <div class="mode-info">
+                            <h3>Petualangan Cerita</h3>
+                            <p>Hadapi dilema di sekolah & rumah. Tentukan keputusan kesatriamu!</p>
+                        </div>
+                        <span class="mode-action-link">Buka Bab Cerita ➡️</span>
+                    </div>
+
+                    <!-- Mode 2: Detektif Perilaku -->
+                    <div class="mode-card card-sort" id="btn-mode-sort">
+                        <div class="mode-icon-box">⚖️</div>
+                        <div class="mode-info">
+                            <h3>Detektif Perilaku</h3>
+                            <p>Pilah tindakan Terpuji vs Tercela secara cepat dan teliti!</p>
+                        </div>
+                        <span class="mode-action-link">Mulai Investigasi ➡️</span>
+                    </div>
+
+                    <!-- Mode 3: Misi Aksi Kebaikan -->
+                    <div class="mode-card card-mission" id="btn-mode-mission">
+                        <div class="mode-icon-box">🧩</div>
+                        <div class="mode-info">
+                            <h3>Misi Aksi Kebaikan</h3>
+                            <p>Bantu orang lain menyelesaikan masalah dengan empati & cinta.</p>
+                        </div>
+                        <span class="mode-action-link">Jalankan Misi ➡️</span>
+                    </div>
+
+                    <!-- Mode 4: Kuis Bintang -->
+                    <div class="mode-card card-quiz" id="btn-mode-quiz">
+                        <div class="mode-icon-box">🏆</div>
+                        <div class="mode-info">
+                            <h3>Kuis Ksatria Bintang</h3>
+                            <p>Uji wawasan budi pekerti, nilai 5S, dan integritasmu!</p>
+                        </div>
+                        <span class="mode-action-link">Ikuti Kuis ➡️</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ----------------------------------------
+                 2. STORY RPG SCREEN
+                 ---------------------------------------- -->
+            <section class="screen" id="screen-story">
+                <div class="story-header-bar">
+                    <button class="btn-action-secondary" onclick="window.gameApp.showScreen('home')">⬅️ Beranda</button>
+                    <span class="story-meta-badge" id="story-category">Nilai Karakter</span>
+                </div>
+
+                <!-- Chapter Scroll Tabs -->
+                <div class="chapter-tabs-scroll" id="story-chapters-tabs"></div>
+
+                <!-- Story Scene -->
+                <div class="story-scene-card animate-pop">
+                    <h2 class="story-main-title" id="story-title">Judul Cerita</h2>
+
+                    <div class="story-narrative-box">
+                        <div class="story-character-avatar" id="story-mascot">🤔</div>
+                        <div class="story-text-content" id="story-scenario-text">Deskripsi skenario cerita...</div>
+                    </div>
+
+                    <h3 class="story-question-prompt" id="story-question-text">Apa yang kamu lakukan?</h3>
+
+                    <div class="story-choices-grid" id="story-choices-container"></div>
+
+                    <!-- Feedback Box -->
+                    <div id="story-feedback-box" class="hidden"></div>
+                </div>
+            </section>
+
+            <!-- ----------------------------------------
+                 3. DETEKTIF SORTING SCREEN
+                 ---------------------------------------- -->
+            <section class="screen" id="screen-sort">
+                <div class="sort-header-row">
+                    <button class="btn-action-secondary" onclick="window.gameApp.showScreen('home')">⬅️ Beranda</button>
+                    <div class="hud-pill gold" id="sort-progress-badge">Kartu 1 dari 16</div>
+                    <div class="hud-pill green" id="sort-current-score">Skor: 0</div>
+                </div>
+
+                <div id="sort-card-area"></div>
+
+                <div class="sort-actions-container">
+                    <button class="btn-sort-terpuji" onclick="window.gameApp.submitSortAnswer('terpuji')">
+                        <span>✨ PERILAKU TERPUJI</span>
+                        <span class="btn-sub-label">Pahlawan Kebaikan (Bagus!)</span>
+                    </button>
+
+                    <button class="btn-sort-tercela" onclick="window.gameApp.submitSortAnswer('tercela')">
+                        <span>⚠️ PERILAKU TERCELA</span>
+                        <span class="btn-sub-label">Harus Dihindari & Diperbaiki</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ----------------------------------------
+                 4. MISI AKSI KEBAIKAN SCREEN
+                 ---------------------------------------- -->
+            <section class="screen" id="screen-mission">
+                <div class="sort-header-row">
+                    <button class="btn-action-secondary" onclick="window.gameApp.showScreen('home')">⬅️ Beranda</button>
+                    <div class="hud-pill gold" id="mission-progress-indicator">Misi 1 / 6</div>
+                </div>
+
+                <div id="mission-content-area"></div>
+            </section>
+
+            <!-- ----------------------------------------
+                 5. KUIS KSATRIA BINTANG SCREEN
+                 ---------------------------------------- -->
+            <section class="screen" id="screen-quiz">
+                <div class="sort-header-row">
+                    <button class="btn-action-secondary" onclick="window.gameApp.showScreen('home')">⬅️ Beranda</button>
+                    <div class="hud-pill gold" id="quiz-progress-badge">Soal 1 dari 8</div>
+                    <div class="hud-pill green" id="quiz-streak-badge">🔥 Streak: 0</div>
+                </div>
+
+                <div id="quiz-question-container"></div>
+            </section>
+
+            <!-- ----------------------------------------
+                 6. POHON KEBAIKAN AJAIB SCREEN
+                 ---------------------------------------- -->
+            <section class="screen" id="screen-tree">
+                <div class="sort-header-row">
+                    <button class="btn-action-secondary" onclick="window.gameApp.showScreen('home')">⬅️ Beranda</button>
+                    <h2 class="section-heading" style="margin-bottom:0;">🌳 Pohon Kebaikan Ajaib</h2>
+                </div>
+
+                <div class="tree-container-card animate-pop">
+                    <div class="tree-canvas-wrapper">
+                        <canvas id="tree-virtue-canvas"></canvas>
+                    </div>
+
+                    <div class="tree-status-box">
+                        <h3 class="tree-stage-heading" id="tree-stage-title">🌱 Tunas Kebaikan Mula</h3>
+                        <p class="tree-stage-desc-text" id="tree-stage-desc">Benih budi pekertimu terus tumbuh semakin subur!</p>
+                        
+                        <div class="tree-progress-bar-wrap">
+                            <div class="tree-progress-bar-fill" id="tree-progress-fill" style="width: 20%;"></div>
+                        </div>
+                        <div style="font-weight:700; color:#047857; font-size:0.9rem;" id="tree-points-text">0 Poin Kebaikan</div>
+                    </div>
+
+                    <div class="tree-actions-row">
+                        <button class="btn-action-primary" id="btn-water-tree">💧 Siram Kasih Sayang</button>
+                        <button class="btn-action-secondary" onclick="window.gameApp.startStoryMode(0)">Tebarkan Kebaikan Lagi 🚀</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ----------------------------------------
+                 7. RUANG MEDALI & PIAGAM SCREEN
+                 ---------------------------------------- -->
+            <section class="screen" id="screen-badges">
+                <div class="sort-header-row">
+                    <button class="btn-action-secondary" onclick="window.gameApp.showScreen('home')">⬅️ Beranda</button>
+                    <div class="hud-pill gold">Koleksi Medali: <span id="hud-badge-count">0/8</span></div>
+                </div>
+
+                <h2 class="section-heading">🎖️ Koleksi Medali Budi Pekerti</h2>
+                <div class="badges-grid" id="badges-grid-container"></div>
+
+                <!-- Printable Certificate -->
+                <h2 class="section-heading">📜 Piagam Penghargaan Ksatria</h2>
+                <div class="certificate-frame animate-pop" id="printable-certificate">
+                    <div class="cert-emblem">👑⭐</div>
+                    <h2 class="cert-super-title">Piagam Penghargaan</h2>
+                    <p class="cert-sub">Ksatria Budi Pekerti & Karakter Mulia</p>
+                    
+                    <p class="cert-for-text">Piagam ini dengan bangga dianugerahkan kepada:</p>
+                    <h1 class="cert-recipient-name" id="cert-player-name">Sahabat Cilik</h1>
+                    
+                    <p class="cert-body-desc">
+                        Atas dedikasi, kejujuran, kepedulian menolong sesama, kedisiplinan, sopan santun 5S, 
+                        dan keberanian membela kebaikan sebagai teladan pahlawan karakter cilik.
+                    </p>
+
+                    <div class="cert-footer-row">
+                        <div class="cert-stamp-box">
+                            <div style="font-weight:700;">Tanggal Anugerah</div>
+                            <div id="cert-date">22 September 2026</div>
+                        </div>
+
+                        <div class="cert-stamp-box">
+                            <span class="cert-stamp-icon">🛡️</span>
+                            <div style="font-weight:700;" id="cert-points">0 Poin Kebaikan</div>
+                            <div style="font-size:0.8rem;" id="cert-badge-count">0 Medali Diraih</div>
+                        </div>
+
+                        <div class="cert-stamp-box">
+                            <div style="font-weight:700;">Dewan Ksatria</div>
+                            <div>Pahlawan Kebaikan Indonesia</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:flex; justify-content:center; gap:16px; margin-top:20px;">
+                    <button class="btn-action-primary" onclick="window.gameApp.printCertificate()">🖨️ Cetak / Simpan Piagam (PDF)</button>
+                    <button class="btn-action-secondary" id="btn-reset-data" style="color:#E11D48; border-color:#FECDD3;">⚠️ Reset Seluruh Petualangan</button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ==========================================
+         MODAL: PENJELASAN SORTING
+         ========================================== -->
+    <div class="modal-overlay" id="sort-modal-overlay">
+        <div class="modal-content-card">
+            <h3 class="modal-title" id="sort-modal-title">🎉 Jawabanmu Tepat!</h3>
+            <p class="modal-desc" id="sort-modal-body">Deskripsi tindakan...</p>
+            <div class="moral-lesson-banner" id="sort-modal-explanation">Penjelasan moral...</div>
+            <button class="btn-action-primary" onclick="window.gameApp.nextSortCard()">Lanjut Kartu Berikutnya ➡️</button>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MODAL: MEDALI DIBUKA (BADGE UNLOCKED)
+         ========================================== -->
+    <div class="modal-overlay" id="badge-modal-overlay">
+        <div class="modal-content-card animate-pop">
+            <div class="modal-badge-icon-box" id="modal-badge-icon">🎖️</div>
+            <h3 class="modal-title" style="color:var(--gold);" id="modal-badge-title">Medali Baru Terbuka!</h3>
+            <p class="modal-desc" id="modal-badge-desc">Selamat atas pencapaianmu!</p>
+            <button class="btn-action-primary" onclick="window.gameApp.closeBadgeModal()">Simpan ke Ruang Medali 🌟</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/audio.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/tree.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
